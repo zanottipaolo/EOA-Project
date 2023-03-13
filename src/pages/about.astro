@@ -2,4 +2,22 @@
 import Layout from "../layouts/Layout.astro"
 ---
 
-<Layout title='About the project - BSO' />
+<Layout title='About the project - BSO'>
+  <main class='bg-white dark:bg-gray-700 dark:text-white p-6 md:p-20'>
+    <h1 class='font-bold text-4xl'>About the project 👨🏻‍💻</h1>
+
+    <p class='leading-8 mt-5'>
+      This project was developed for the Economics and Business Organization
+      exam @ UniBg. Its purpose is to give the user a clear view of corporate
+      financial statements, specifically the balance sheet and income statement.
+      Its operation is very simple: just go and load one item at a time,
+      indicating the value of the transaction and its category. Automatically
+      the balance sheet will be updated and once finished it will be possible to
+      download it in PDF format. <br />
+      For the part of privacy and liability see the <a
+        href='/policy'
+        class='text-teal-500 hover:text-teal-600 transition-colors'>Policy</a
+      > page.
+    </p>
+  </main>
+</Layout>

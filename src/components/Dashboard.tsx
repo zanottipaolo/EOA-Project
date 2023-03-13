@@ -1,5 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react"
 import { Fragment, useState } from "react"
+import { VscFilePdf } from "react-icons/vsc"
 
 const Dashboard = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -18,7 +19,88 @@ const Dashboard = () => {
     closeModal()
   }
 
-  const data = [
+  const SPattivo = [
+    {
+      name: "John Doe",
+      birth: "01 - 01 - 1970",
+      role: "Software Engineer",
+      salary: "1000",
+    },
+    {
+      name: "John Doe",
+      birth: "01 - 01 - 1970",
+      role: "Software Engineer",
+      salary: "1000",
+    },
+    {
+      name: "John Doe",
+      birth: "01 - 01 - 1970",
+      role: "Software Engineer",
+      salary: "1000",
+    },
+    {
+      name: "John Doe",
+      birth: "01 - 01 - 1970",
+      role: "Software Engineer",
+      salary: "1000",
+    },
+  ]
+
+  const SPpassivo = [
+    {
+      name: "John Doe",
+      birth: "01 - 01 - 1970",
+      role: "Software Engineer",
+      salary: "1000",
+    },
+    {
+      name: "John Doe",
+      birth: "01 - 01 - 1970",
+      role: "Software Engineer",
+      salary: "1000",
+    },
+    {
+      name: "John Doe",
+      birth: "01 - 01 - 1970",
+      role: "Software Engineer",
+      salary: "1000",
+    },
+    {
+      name: "John Doe",
+      birth: "01 - 01 - 1970",
+      role: "Software Engineer",
+      salary: "1000",
+    },
+  ]
+
+  const CEattivo = [
+    {
+      name: "John Doe",
+      birth: "01 - 01 - 1970",
+      role: "Software Engineer",
+      salary: "1000",
+    },
+    {
+      name: "John Doe",
+      birth: "01 - 01 - 1970",
+      role: "Software Engineer",
+      salary: "1000",
+    },
+    {
+      name: "John Doe",
+      birth: "01 - 01 - 1970",
+      role: "Software Engineer",
+      salary: "1000",
+    },
+    {
+      name: "John Doe",
+      birth: "01 - 01 - 1970",
+      role: "Software Engineer",
+      salary: "1000",
+    },
+  ]
+
+  const CEpassivo = [
     {
       name: "John Doe",
       birth: "01 - 01 - 1970",
@@ -46,23 +128,33 @@ const Dashboard = () => {
   ]
 
   return (
-    <div className='flex flex-col items-center justify-center h-full'>
-      {/* Add Item */}
-      <button
-        type='button'
-        onClick={openModal}
-        className='mt-5 rounded-full bg-teal-600 p-3 hover:bg-teal-700 transition-colors text-white shadow-md'
-      >
-        Add a new item!
-      </button>
+    <div className='flex flex-col items-center justify-center'>
+      <div className='flex flex-row gap-x-5'>
+        {/* Add Item */}
+        <button
+          type='button'
+          onClick={openModal}
+          className='font-bold mt-5 rounded-lg bg-teal-600 p-3 hover:bg-teal-700 transition-colors text-white shadow-md'
+        >
+          Add a new item!
+        </button>
+
+        {/* Download PDF */}
+        <button
+          type='button'
+          className='font-bold mt-5 flex gap-x-3 rounded-lg bg-red-400 p-3 hover:bg-red-500 transition-colors text-white shadow-md'
+        >
+          DOWNLOAD PDF
+          <VscFilePdf className='text-white h-6 w-6' />
+        </button>
+      </div>
 
       {/* Stato patrimoniale */}
-      <div className='mt-10'>
+      <div className='mt-10 w-full px-16'>
         <h2 className='font-bold text-2xl'>Stato patrimoniale</h2>
-        <div className='flex flex-col md:flex-row'>
+        <div className='flex flex-col md:flex-row gap-y-10 md:justify-around'>
           {/* Attivo */}
-
-          <div className='overflow-x-auto p-12'>
+          <div className='overflow-x-auto md:p-12 w-full'>
             <h3 className='font-bold text-xl'>Attivo</h3>
             <table className='min-w-full divide-y-2 divide-gray-200 text-sm'>
               <thead>
@@ -79,7 +171,7 @@ const Dashboard = () => {
               </thead>
 
               <tbody className='divide-y divide-gray-200'>
-                {data.map((item) => (
+                {SPattivo.map((item) => (
                   <tr key={item.name}>
                     <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
                       {item.name}
@@ -102,7 +194,7 @@ const Dashboard = () => {
           </div>
 
           {/* Passivo */}
-          <div className='overflow-x-auto p-12'>
+          <div className='overflow-x-auto md:p-12 w-full'>
             <h3 className='font-bold text-xl'>Passivo</h3>
             <table className='min-w-full divide-y-2 divide-gray-200 text-sm'>
               <thead>
@@ -119,7 +211,94 @@ const Dashboard = () => {
               </thead>
 
               <tbody className='divide-y divide-gray-200'>
-                {data.map((item) => (
+                {SPpassivo.map((item) => (
+                  <tr key={item.name}>
+                    <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
+                      {item.name}
+                    </td>
+
+                    <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
+                      {item.salary}
+                    </td>
+                    <td className='whitespace-nowrap px-4 py-2'>
+                      <a
+                        href='/'
+                        className='inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700'
+                      >
+                        View
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Conto economico */}
+      <div className='mt-10 w-full px-16'>
+        <h2 className='font-bold text-2xl'>Conto economico</h2>
+        <div className='flex flex-col md:flex-row gap-y-10 md:justify-around'>
+          {/* Attivo */}
+          <div className='overflow-x-auto md:p-12 w-full'>
+            <h3 className='font-bold text-xl'>Attivo</h3>
+            <table className='min-w-full divide-y-2 divide-gray-200 text-sm'>
+              <thead>
+                <tr>
+                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 dark:text-white'>
+                    Name
+                  </th>
+
+                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 dark:text-white'>
+                    Salary
+                  </th>
+                  <th className='px-4 py-2'></th>
+                </tr>
+              </thead>
+
+              <tbody className='divide-y divide-gray-200'>
+                {CEattivo.map((item) => (
+                  <tr key={item.name}>
+                    <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
+                      {item.name}
+                    </td>
+                    <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
+                      {item.salary}
+                    </td>
+                    <td className='whitespace-nowrap px-4 py-2'>
+                      <a
+                        href='/'
+                        className='inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700'
+                      >
+                        View
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Passivo */}
+          <div className='overflow-x-auto md:p-12 w-full'>
+            <h3 className='font-bold text-xl'>Passivo</h3>
+            <table className='min-w-full divide-y-2 divide-gray-200 text-sm'>
+              <thead>
+                <tr>
+                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 dark:text-white'>
+                    Name
+                  </th>
+
+                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 dark:text-white'>
+                    Salary
+                  </th>
+                  <th className='px-4 py-2'></th>
+                </tr>
+              </thead>
+
+              <tbody className='divide-y divide-gray-200'>
+                {CEpassivo.map((item) => (
                   <tr key={item.name}>
                     <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
                       {item.name}
