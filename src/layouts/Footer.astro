@@ -1,0 +1,71 @@
+---
+import { FaGithub } from "react-icons/fa"
+
+const currentYear = new Date().getFullYear()
+---
+
+<footer aria-label='Site Footer' class='bg-gray-100 dark:bg-gray-600 mt-auto'>
+  <div class='mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8'>
+    <a href='/' class='flex flex-col items-center justify-center text-teal-600 dark:text-teal-400'>
+      <img src='/favicon.ico' alt='Logo EOA project' class='h-12' />
+      <p class='font-bold text-3xl italic mt-5 text-center'>
+        Balance Sheet Online
+      </p>
+      <p class='text-sm'>{currentYear}</p>
+    </a>
+
+    <p class='mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500 dark:text-white''>
+      An open source project to create your own company balance sheet by
+      entering all the necessary items. You can also save it as a PDF document.
+    </p>
+
+    <nav aria-label='Footer Nav' class='mt-12'>
+      <ul
+        class='flex flex-wrap justify-center gap-6 md:gap-8 lg:gap-12 text-center'
+      >
+        <li>
+          <a
+            class='text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-gray-300'
+            href='/about'
+          >
+            About the project
+          </a>
+        </li>
+
+        <li>
+          <a
+            class='text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-gray-300'
+            href='/policy'
+          >
+            Privacy & Cookies Policy
+          </a>
+        </li>
+
+        <li>
+          <a
+            class='text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-gray-300'
+            href='https://www.paolozanotti.dev'
+            rel='noreferrer'
+            target='_blank'
+          >
+            Find out who I am!
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <ul class='mt-12 flex justify-center gap-6 md:gap-8'>
+      <li>
+        <a
+          href='https://www.github.com/zanottipaolo/eoa-project'
+          rel='noreferrer'
+          target='_blank'
+          class='text-gray-700 transition hover:text-gray-700/75 dark:text-black dark:hover:text-gray-700'
+        >
+          <span class='sr-only'>GitHub</span>
+          <FaGithub className='h-6 w-6' />
+        </a>
+      </li>
+    </ul>
+  </div>
+</footer>

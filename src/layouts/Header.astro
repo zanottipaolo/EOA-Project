@@ -1,0 +1,28 @@
+---
+import ToggleDarkMode from "../components/ToggleDarkMode"
+---
+
+<header class='bg-gray-100 dark:bg-gray-600'>
+  {/* Navbar */}
+  <nav
+    class='mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8'
+    aria-label='Menu'
+  >
+    <div class='flex lg:flex-1'>
+      <a href='/' class='-m-1.5 p-1.5 flex items-center gap-x-4 text-teal-600 dark:text-teal-400'>
+        <img
+          src='/favicon.ico'
+          alt='Logo Balance Sheet Online'
+          width={48}
+          height={48}
+        />
+        <p class='font-bold text-2xl italic'>Balance Sheet Online</p>
+      </a>
+    </div>
+
+    <div class='flex gap-x-5'>
+      {/* Dark mode */}
+      <ToggleDarkMode client:only='react' />
+    </div>
+  </nav>
+</header>
