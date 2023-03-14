@@ -3,8 +3,271 @@ import { Fragment, useState } from "react"
 import { VscFilePdf } from "react-icons/vsc"
 
 const Dashboard = () => {
+  // Hook
   const [isOpen, setIsOpen] = useState(false)
+  const [assetsItem, setAssetsItem] = useState([
+    {
+      name: "a-credito-verso-soci",
+      label: "A) Credito verso soci",
+      amount: 0,
+    },
+    {
+      name: "b-immobilizzazioni",
+      label: "B) Immobilizzazioni",
+      amount: null,
+    },
+    {
+      name: "b-i-immobilizzazioni-immateriali",
+      label: "B. I) Immobilizzazioni immateriali",
+      amount: 500,
+    },
+    {
+      name: "b-ii-immobilizzazioni-materiali",
+      label: "B. II) Immobilizzazioni materiali",
+      amount: 0,
+    },
+    {
+      name: "b-iii-immobilizzazioni-finanziarie",
+      label: "B. III) Immobilizzazioni finanziarie",
+      amount: 0,
+    },
+    {
+      name: "c-attivo-circolante",
+      label: "C) Attivo circolante",
+      amount: null,
+    },
+    {
+      name: "c-i-rimanenze",
+      label: "C. I) Rimanenze",
+      amount: null,
+    },
+    {
+      name: "c-i-1-materie-prime",
+      label: "C. I. 1) Materie prime",
+      amount: 450000,
+    },
+    {
+      name: "c-i-4-prodotti-finiti",
+      label: "C. I. 4) Prodotti finiti",
+      amount: 0,
+    },
+    {
+      name: "c-ii-crediti",
+      label: "C. II) Crediti",
+      amount: null,
+    },
+    {
+      name: "c-i-1-verso-clienti",
+      label: "C. I. 1) Verso clienti",
+      amount: 0,
+    },
+    {
+      name: "c-ii-2-verso-imprese",
+      label: "C. II. 2) Verso imprese",
+      amount: 0,
+    },
+    {
+      name: "c-iii-attività-finanziarie",
+      label: "C. III) Attività finanziarie",
+      amount: null,
+    },
+    {
+      name: "c-iii-1-partecipazioni-in-imprese-controllate",
+      label: "C. III. 1) Partecipazioni in imprese controllate",
+      amount: 0,
+    },
+    {
+      name: "c-iv-cassa",
+      label: "C. IV) Cassa",
+      amount: 0,
+    },
+    {
+      name: "d-ratei-e-risconti-attivi",
+      label: "D) Ratei e Risconti attivi",
+      amount: 0,
+    },
+  ])
+  const [liabilitiesItem, setLiabilitiesItem] = useState([
+    {
+      name: "a-patrimonio-netto",
+      label: "A) Patrimonio netto",
+      amount: null,
+    },
+    {
+      name: "a-i-capitale-sociale",
+      label: "A. I) Capitale sociale",
+      amount: 0,
+    },
+    {
+      name: "a-ii-riserve",
+      label: "A. II) Riserve",
+      amount: 0,
+    },
+    {
+      name: "a-ix-utili-esercizio",
+      label: "A. IX) Utili dell'esercizio",
+      amount: 0,
+    },
+    {
+      name: "b-fondo-rischi-oneri",
+      label: "B) Fondo Rischi e oneri",
+      amount: null,
+    },
+    {
+      name: "b-ii-imposte",
+      label: "B. II) Imposte",
+      amount: 0,
+    },
+    {
+      name: "c-tfr",
+      label: "C) TFR",
+      amount: 0,
+    },
+    {
+      name: "d-debiti",
+      label: "D) Debiti",
+      amount: null,
+    },
+    {
+      name: "d-i-commerciali",
+      label: "D. I) Commerciali",
+      amount: 0,
+    },
+    {
+      name: "d-ii-altri-debiti",
+      label: "D. II) Altri debiti",
+      amount: 0,
+    },
+    {
+      name: "d-iii-finanziari",
+      label: "D. III) Finanziari",
+      amount: null,
+    },
+    {
+      name: "d-iii-1-debiti-bp",
+      label: "D. III. 1) Debiti BP",
+      amount: 0,
+    },
+    {
+      name: "d-iii-2-debiti-lp",
+      label: "D. III. 2) Debiti LP",
+      amount: 0,
+    },
+    {
+      name: "d-vi-verso-fornitori",
+      label: "D. VI) Verso fornitori",
+      amount: 0,
+    },
+    {
+      name: "e-ratei-risconti-passivi",
+      label: "E) Ratei e risconti passivi",
+      amount: 0,
+    },
+  ])
+  const [incomeItems, setIncomeItems] = useState([
+    {
+      name: "a-valore-della-produzione",
+      label: "A) Valore della produzione",
+      amount: null,
+    },
+    {
+      name: "a-1-ricavi-dalle-vendite",
+      label: "A. 1) Ricavi dalle vendite",
+      amount: 0,
+    },
+    {
+      name: "a-2-variazioni-prodotti",
+      label: "A. 2) Variazioni prodotti",
+      amount: 0,
+    },
+    {
+      name: "b-costi-della-produzione",
+      label: "B) Costi della produzione",
+      amount: null,
+    },
+    {
+      name: "b-6-costi-materie-prime",
+      label: "B. 6) Costi materie prime",
+      amount: 0,
+    },
+    {
+      name: "b-8-godimento-beni-terzi",
+      label: "B. 8) Godimento beni terzi",
+      amount: 0,
+    },
+    {
+      name: "b-9costo-personale",
+      label: "B. 9) Costo per il personale",
+      amount: 0,
+    },
+    {
+      name: "b-10-ammortamenti-svalutazioni",
+      label: "B. 10) Ammortamenti e svalutazioni",
+      amount: null,
+    },
+    {
+      name: "b-10-a-immobilizzazioni-immateriali",
+      label: "B. 10. a) Immobilizzazioni immateriali",
+      amount: 0,
+    },
+    {
+      name: "b-10-b-immobilizzazioni-materiali",
+      label: "B. 10. b) Immobilizzazioni materiali",
+      amount: 0,
+    },
+    {
+      name: "b-10-d-svalutazione-crediti",
+      label: "B. 10. d) Svalutazione dei crediti",
+      amount: 0,
+    },
+    {
+      name: "b-11-variazione-rimanenze-mp",
+      label: "B. 11) Variazione rimanenze MP",
+      amount: 0,
+    },
+    {
+      name: "b-12-accantonamento-per-rischi",
+      label: "B. 12) Accantonamento per rischi",
+      amount: 0,
+    },
+    {
+      name: "b-14-oneri-diversi",
+      label: "B. 14) Oneri diversi",
+      amount: 0,
+    },
+    {
+      name: "c-proventi-oneri",
+      label: "C) Proventi e oneri",
+      amount: null,
+    },
+    {
+      name: "c-15-proventi-partecipazioni",
+      label: "C. 15) Proventi da partecipazioni",
+      amount: 0,
+    },
+    {
+      name: "c-17-interessi-altri-oneri",
+      label: "C. 17) Interessi e altri oneri",
+      amount: 0,
+    },
+    {
+      name: "d-rettifiche-di-valore",
+      label: "D) Rettifiche di valore",
+      amount: null,
+    },
+    {
+      name: "d-18-rivalutazioni",
+      label: "D. 18) Rivalutazioni",
+      amount: 0,
+    },
+    {
+      name: "d-19-svalutazioni",
+      label: "D. 19) Svalutazioni",
+      amount: 0,
+    },
+  ])
 
+  // Function
   const closeModal = () => {
     setIsOpen(false)
   }
@@ -19,111 +282,19 @@ const Dashboard = () => {
     closeModal()
   }
 
-  const SPattivo = [
+  // Data
+  const preBuiltOp = [
     {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
+      name: "aumentoCapitale",
+      label: "Aumento di capitale",
     },
     {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
+      name: "pagaStipendi",
+      label: "Paga gli stipendi",
     },
     {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-  ]
-
-  const SPpassivo = [
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-  ]
-
-  const CEattivo = [
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-  ]
-
-  const CEpassivo = [
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
-    },
-    {
-      name: "John Doe",
-      birth: "01 - 01 - 1970",
-      role: "Software Engineer",
-      salary: "1000",
+      name: "ammortamento",
+      label: "Ammortamento",
     },
   ]
 
@@ -155,337 +326,74 @@ const Dashboard = () => {
         <div className='flex flex-col md:flex-row gap-y-10 md:justify-around'>
           {/* Attivo */}
           <div className='overflow-x-auto md:p-12 w-full'>
-            <h3 className='font-bold text-xl'>Assets</h3>
+            <div className='flex flex-col sm:flex-row sm:items-center justify-between mb-5'>
+              <h3 className='font-bold text-xl'>Assets</h3>
+              <p className='font-bold text-base'>
+                Total:{" "}
+                <span className='text-teal-600'>
+                  {assetsItem.reduce(
+                    (acc, item) =>
+                      acc + (item.amount != null ? item.amount : 0),
+                    0
+                  )}
+                </span>
+              </p>
+            </div>
             <table className='min-w-full divide-y-2 divide-gray-200 text-sm'>
-              <thead>
-                <tr>
-                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 dark:text-white'>
-                    Label
-                  </th>
-
-                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 dark:text-white'>
-                    Value
-                  </th>
-                </tr>
-              </thead>
-
               <tbody className='divide-y divide-gray-200'>
-                {/* A) Credito verso i soci */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className='font-bold'>A) Credito verso soci</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* B) Immobilizzazioni */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className='font-bold'>B) Immobilizzazioni</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'></td>
-                  <td className='whitespace-nowrap px-4 py-2'></td>
-                </tr>
-
-                {/* B.1) Immateriali */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p>B. I) Immobilizzazioni immateriali</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* B.2) Materiali */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p>B. II) Immobilizzazioni materiali</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* B.3) Finanziarie */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p>B. III) Immobilizzazioni finanziarie</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* C) Attivo circolante */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className='font-bold'>C) Attivo circolante</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'></td>
-                  <td className='whitespace-nowrap px-4 py-2'></td>
-                </tr>
-
-                {/* C. I) Rimanenze */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className='font-bold'>C. I) Rimanenze</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'></td>
-                  <td className='whitespace-nowrap px-4 py-2'></td>
-                </tr>
-
-                {/* C. I. 1) Materie prime */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p>C. I. 1) Materie prime</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* C. I. 2) Prodotti finiti */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p>C. I. 4) Prodotti finiti</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* C. II) Crediti */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className='font-bold'>C. II) Crediti</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'></td>
-                  <td className='whitespace-nowrap px-4 py-2'></td>
-                </tr>
-
-                {/* C. II. 1) Verso clienti */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p>C. I. 1) Verso clienti</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* C. II. 2) Verso imprese */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p>C. II. 2) Verso imprese</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* C. III) Attività finanziarie */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className='font-bold'>C. III) Attività finanziarie</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'></td>
-                  <td className='whitespace-nowrap px-4 py-2'></td>
-                </tr>
-
-                {/* C. III. 1) Partecipazioni */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p>C. III. 1) Partecipazioni in imprese controllate</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* C. IV) Cassa */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>C. IV) Cassa</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    500'000
-                  </td>
-                </tr>
-
-                {/* D) Ratei e risconti attivi */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>D) Ratei e Risconti attivi</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
+                {assetsItem.map((asset) => (
+                  <tr key={asset.name}>
+                    <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
+                      <p
+                        className={`${asset.amount != null ? "" : "font-bold"}`}
+                      >
+                        {asset.label}
+                      </p>
+                    </td>
+                    <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
+                      <p>{asset.amount != null ? asset.amount : ""}</p>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
 
           {/* Passivo */}
           <div className='overflow-x-auto md:p-12 w-full'>
-            <h3 className='font-bold text-xl'>Liabilities</h3>
+            <div className='flex flex-col sm:flex-row sm:items-center justify-between mb-5'>
+              <h3 className='font-bold text-xl'>Liabilities</h3>
+              <p className='font-bold text-base'>
+                Total:{" "}
+                <span className='text-teal-600'>
+                  {liabilitiesItem.reduce(
+                    (acc, item) =>
+                      acc + (item.amount != null ? item.amount : 0),
+                    0
+                  )}
+                </span>
+              </p>
+            </div>
             <table className='min-w-full divide-y-2 divide-gray-200 text-sm'>
-              <thead>
-                <tr>
-                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 dark:text-white'>
-                    Label
-                  </th>
-
-                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 dark:text-white'>
-                    Value
-                  </th>
-                </tr>
-              </thead>
-
               <tbody className='divide-y divide-gray-200'>
-                {/* A) Patrimonio netto */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className='font-bold'>A) Patrimonio netto</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'></td>
-                </tr>
-
-                {/* A. I) Capitale sociale */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>A. I) Capitale sociale</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* A. II) Riserve */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>A. II) Riserve</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* A. IX) Utili dell'esercizio */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>A. IX) Utili dell'esercizio</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* B) Fondo Rischi e oneri */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className='font-bold'>B) Fondo Rischi e oneri</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'></td>
-                </tr>
-
-                {/* B. II) Per imposte */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>B. II) Imposte</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* C) TFR */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>C) TFR</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    500'000
-                  </td>
-                </tr>
-
-                {/* D) Debiti */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className='font-bold'>D) Debiti</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'></td>
-                </tr>
-
-                {/* D. I) Commerciali */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>D. I) Commerciali</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* D. II) Altri debiti */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>D. II) Altri debiti</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* D. III) Finanziari */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className='font-bold'>D. III) Finanziari</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'></td>
-                </tr>
-
-                {/* D. III. 1) Debiti BP */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>D. III. 1) Debiti BP</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* D. III. 2) Debiti LP */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>D. III. 2) Debiti LP</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* D. VI) Verso fornitori */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>D. VI) Verso fornitori</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>500'000</p>
-                  </td>
-                </tr>
-
-                {/* E) Ratei e risconti passivi */}
-                <tr>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                    <p className=''>E) Ratei e risconti passivi</p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    500'000
-                  </td>
-                </tr>
+                {liabilitiesItem.map((liabilities) => (
+                  <tr key={liabilities.name}>
+                    <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
+                      <p
+                        className={`${
+                          liabilities.amount != null ? "" : "font-bold"
+                        }`}
+                      >
+                        {liabilities.label}
+                      </p>
+                    </td>
+                    <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
+                      <p>
+                        {liabilities.amount != null ? liabilities.amount : ""}
+                      </p>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -493,89 +401,28 @@ const Dashboard = () => {
       </div>
 
       {/* Conto economico */}
-      <div className='mt-10 w-full px-16'>
+      <div className='mt-10 w-full px-4 md:px-16'>
         <h2 className='font-bold text-2xl'>Income statement</h2>
-        <div className='flex flex-col md:flex-row gap-y-10 md:justify-around'>
-          {/* Attivo */}
-          <div className='overflow-x-auto md:p-12 w-full'>
-            <h3 className='font-bold text-xl'>Assets</h3>
-            <table className='min-w-full divide-y-2 divide-gray-200 text-sm'>
-              <thead>
-                <tr>
-                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 dark:text-white'>
-                    Name
-                  </th>
 
-                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 dark:text-white'>
-                    Salary
-                  </th>
-                  <th className='px-4 py-2'></th>
+        <div className='overflow-x-auto md:p-12 w-1/2 m-auto'>
+          <table className='min-w-full divide-y-2 divide-gray-200 text-sm'>
+            <tbody className='divide-y divide-gray-200'>
+              {incomeItems.map((income) => (
+                <tr key={income.name}>
+                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
+                    <p
+                      className={`${income.amount != null ? "" : "font-bold"}`}
+                    >
+                      {income.label}
+                    </p>
+                  </td>
+                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
+                    <p>{income.amount != null ? income.amount : ""}</p>
+                  </td>
                 </tr>
-              </thead>
-
-              <tbody className='divide-y divide-gray-200'>
-                {CEattivo.map((item) => (
-                  <tr key={item.name}>
-                    <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                      {item.name}
-                    </td>
-                    <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                      {item.salary}
-                    </td>
-                    <td className='whitespace-nowrap px-4 py-2'>
-                      <a
-                        href='/'
-                        className='inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700'
-                      >
-                        View
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Passivo */}
-          <div className='overflow-x-auto md:p-12 w-full'>
-            <h3 className='font-bold text-xl'>Liabilities</h3>
-            <table className='min-w-full divide-y-2 divide-gray-200 text-sm'>
-              <thead>
-                <tr>
-                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 dark:text-white'>
-                    Name
-                  </th>
-
-                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 dark:text-white'>
-                    Salary
-                  </th>
-                  <th className='px-4 py-2'></th>
-                </tr>
-              </thead>
-
-              <tbody className='divide-y divide-gray-200'>
-                {CEpassivo.map((item) => (
-                  <tr key={item.name}>
-                    <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
-                      {item.name}
-                    </td>
-
-                    <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                      {item.salary}
-                    </td>
-                    <td className='whitespace-nowrap px-4 py-2'>
-                      <a
-                        href='/'
-                        className='inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700'
-                      >
-                        View
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -610,26 +457,152 @@ const Dashboard = () => {
                     as='h3'
                     className='text-lg font-medium leading-6 text-gray-900 dark:text-white'
                   >
-                    Item information
+                    Transaction information
                   </Dialog.Title>
-                  <form onSubmit={handleSubmit}>
-                    <div className='mt-2 flex flex-col sm:flex-row gap-2'>
-                      <select
-                        className='p-2 w-1/2 border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                        defaultValue='Operation'
-                      >
-                        <option value='Operation' disabled>
-                          Operation
-                        </option>
-                        <option value='Ford'>Ford</option>
-                        <option value='Volvo'>Volvo</option>
-                        <option value='Fiat'>Fiat</option>
-                      </select>
+                  <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+                    {/* Pre-built  */}
+                    <div className='mt-2'>
+                      <h4 className='text-gray-900 dark:text-white'>
+                        Pre-built operation
+                      </h4>
+                      <div className='flex flex-col sm:flex-row gap-2'>
+                        <select
+                          className='p-2 w-full md:w-1/2 border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                          defaultValue='Operation'
+                          name='prebuilt'
+                        >
+                          <option value='Operation' disabled>
+                            Operation
+                          </option>
+                          {preBuiltOp.map((item) => (
+                            <option value={item.name} key={item.label}>
+                              {item.label}
+                            </option>
+                          ))}
+                        </select>
 
-                      <input
-                        placeholder='Value'
-                        className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
-                      />
+                        <input
+                          placeholder='Value'
+                          className='p-2 w-full md:w-1/2 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                        />
+                      </div>
+                    </div>
+
+                    {/* Custom */}
+                    <div className='mt-2'>
+                      <div className='flex gap-2 items-center mb-2'>
+                        <h4 className='text-gray-900 dark:text-white'>
+                          Custom operation
+                        </h4>
+                      </div>
+
+                      {/* Prima operazione */}
+                      <div className='flex flex-col md:flex-row gap-2 mb-5 md:mb-2'>
+                        <select
+                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                          defaultValue='Operation'
+                        >
+                          <option value='Operation' disabled>
+                            Operation
+                          </option>
+                          <option value='Ford'>Ford</option>
+                          <option value='Volvo'>Volvo</option>
+                          <option value='Fiat'>Fiat</option>
+                        </select>
+
+                        <div className='flex gap-2'>
+                          <input
+                            placeholder='Dare'
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          />
+
+                          <input
+                            placeholder='Avere'
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          />
+                        </div>
+                      </div>
+
+                      {/* Seconda operazione */}
+                      <div className='flex flex-col md:flex-row gap-2 mb-5 md:mb-2'>
+                        <select
+                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                          defaultValue='Operation'
+                        >
+                          <option value='Operation' disabled>
+                            Operation
+                          </option>
+                          <option value='Ford'>Ford</option>
+                          <option value='Volvo'>Volvo</option>
+                          <option value='Fiat'>Fiat</option>
+                        </select>
+
+                        <div className='flex gap-2'>
+                          <input
+                            placeholder='Dare'
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          />
+
+                          <input
+                            placeholder='Avere'
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          />
+                        </div>
+                      </div>
+
+                      {/* Terza operazione */}
+                      <div className='flex flex-col md:flex-row gap-2 mb-5 md:mb-2'>
+                        <select
+                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                          defaultValue='Operation'
+                        >
+                          <option value='Operation' disabled>
+                            Operation
+                          </option>
+                          <option value='Ford'>Ford</option>
+                          <option value='Volvo'>Volvo</option>
+                          <option value='Fiat'>Fiat</option>
+                        </select>
+
+                        <div className='flex gap-2'>
+                          <input
+                            placeholder='Dare'
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          />
+
+                          <input
+                            placeholder='Avere'
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          />
+                        </div>
+                      </div>
+
+                      {/* Quarta operazione */}
+                      <div className='flex flex-col md:flex-row gap-2'>
+                        <select
+                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                          defaultValue='Operation'
+                        >
+                          <option value='Operation' disabled>
+                            Operation
+                          </option>
+                          <option value='Ford'>Ford</option>
+                          <option value='Volvo'>Volvo</option>
+                          <option value='Fiat'>Fiat</option>
+                        </select>
+
+                        <div className='flex gap-2'>
+                          <input
+                            placeholder='Dare'
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          />
+
+                          <input
+                            placeholder='Avere'
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          />
+                        </div>
+                      </div>
                     </div>
 
                     <div className='mt-4'>
