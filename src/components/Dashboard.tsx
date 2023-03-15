@@ -1,10 +1,11 @@
 import { Dialog, Transition } from "@headlessui/react"
-import { Fragment, useState } from "react"
+import { FormEvent, Fragment, useState } from "react"
 import { VscFilePdf } from "react-icons/vsc"
 
 const Dashboard = () => {
   // Hook
   const [isOpen, setIsOpen] = useState(false)
+
   const [assetsItem, setAssetsItem] = useState([
     {
       name: "a-credito-verso-soci",
@@ -266,24 +267,32 @@ const Dashboard = () => {
       amount: 0,
     },
   ])
-  const [typeOperations, setTypeOperations] = useState([
-    {
-      name: "type1",
-      value: "",
-    },
-    {
-      name: "type2",
-      value: "",
-    },
-    {
-      name: "type3",
-      value: "",
-    },
-    {
-      name: "type4",
-      value: "",
-    },
-  ])
+
+  const customData1 = [
+    { item: assetsItem, category: "assets" },
+    { item: liabilitiesItem, category: "liabilities" },
+    { item: incomeItems, category: "income" },
+  ]
+  const customData2 = [
+    { item: assetsItem, category: "assets" },
+    { item: liabilitiesItem, category: "liabilities" },
+    { item: incomeItems, category: "income" },
+  ]
+  const customData3 = [
+    { item: assetsItem, category: "assets" },
+    { item: liabilitiesItem, category: "liabilities" },
+    { item: incomeItems, category: "income" },
+  ]
+  const customData4 = [
+    { item: assetsItem, category: "assets" },
+    { item: liabilitiesItem, category: "liabilities" },
+    { item: incomeItems, category: "income" },
+  ]
+
+  const [type1, setCustomType1] = useState("")
+  const [type2, setCustomType2] = useState("")
+  const [type3, setCustomType3] = useState("")
+  const [type4, setCustomType4] = useState("")
 
   // Function
   const closeModal = () => {
@@ -300,79 +309,20 @@ const Dashboard = () => {
     closeModal()
   }
 
-  let customData1: any = []
-  const loadOperation1 = (event: any) => {
-    setTypeOperations(
-      typeOperations.map((item) =>
-        item.name === "type1"
-          ? { name: "type1", value: event.target.value }
-          : { ...item }
-      )
-    )
-
-    if (event.target.value === "stato-patrimoniale-attivo") {
-      customData1 = assetsItem
-    } else if (event.target.value === "stato-patrimoniale-passivo") {
-      customData1 = liabilitiesItem
-    } else {
-      customData1 = incomeItems
-    }
-  }
-
-  let customData2
-  const loadOperation2 = (event: any) => {
-    setTypeOperations(
-      typeOperations.map((item) =>
-        item.name === "type2"
-          ? { name: "type2", value: event.target.value }
-          : { ...item }
-      )
-    )
-
-    if (event.target.value === "stato-patrimoniale-attivo") {
-      customData2 = assetsItem
-    } else if (event.target.value === "stato-patrimoniale-passivo") {
-      customData2 = liabilitiesItem
-    } else {
-      customData2 = incomeItems
-    }
-  }
-
-  let customData3
-  const loadOperation3 = (event: any) => {
-    setTypeOperations(
-      typeOperations.map((item) =>
-        item.name === "type3"
-          ? { name: "type3", value: event.target.value }
-          : { ...item }
-      )
-    )
-
-    if (event.target.value === "stato-patrimoniale-attivo") {
-      customData3 = assetsItem
-    } else if (event.target.value === "stato-patrimoniale-passivo") {
-      customData3 = liabilitiesItem
-    } else {
-      customData3 = incomeItems
-    }
-  }
-
-  let customData4
-  const loadOperation4 = (event: any) => {
-    setTypeOperations(
-      typeOperations.map((item) =>
-        item.name === "type4"
-          ? { name: "type4", value: event.target.value }
-          : { ...item }
-      )
-    )
-
-    if (event.target.value === "stato-patrimoniale-attivo") {
-      customData4 = assetsItem
-    } else if (event.target.value === "stato-patrimoniale-passivo") {
-      customData4 = liabilitiesItem
-    } else {
-      customData4 = incomeItems
+  const loadCustomData = (event: FormEvent<HTMLSelectElement>) => {
+    switch (event.target.name) {
+      case "type1":
+        setCustomType1(event.target.value)
+        break
+      case "type2":
+        setCustomType2(event.target.value)
+        break
+      case "type3":
+        setCustomType3(event.target.value)
+        break
+      case "type4":
+        setCustomType4(event.target.value)
+        break
     }
   }
 
@@ -594,202 +544,228 @@ const Dashboard = () => {
                       {/* Prima operazione */}
                       <div className='flex flex-col md:flex-row gap-2 mb-5 items-center'>
                         <p className='text-gray-900 dark:text-white'>1.</p>
-
-                        <select
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                          defaultValue='type'
-                          name='type1'
-                          onChange={loadOperation1}
-                        >
-                          <option value='type' disabled>
-                            Type
-                          </option>
-                          <option value='stato-patrimoniale-attivo'>
-                            Stato patrimoniale attivo
-                          </option>
-                          <option value='stato-patrimoniale-passivo'>
-                            Stato patrimoniale passivo
-                          </option>
-                          <option value='conto-economico'>
-                            Conto economico
-                          </option>
-                        </select>
-
-                        <select
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                          defaultValue='operation'
-                        >
-                          <option value='operation' disabled>
-                            Operation
-                          </option>
-
-                          {customData1?.map((item: { name: string; value: number; label: string }) => (
-                            <option value={item.name} key={item.name}>
-                              {item.label}
+                        <div className='flex flex-col md:flex-row w-full md:w-3/5 gap-2'>
+                          <select
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                            defaultValue='type'
+                            name='type1'
+                            onChange={(event) => loadCustomData(event)}
+                          >
+                            <option value='type' disabled>
+                              Type
                             </option>
-                          ))}
-                        </select>
+                            <option value='assets'>
+                              Stato patrimoniale attivo
+                            </option>
+                            <option value='liabilities'>
+                              Stato patrimoniale passivo
+                            </option>
+                            <option value='income'>Conto economico</option>
+                          </select>
+
+                          <select
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                            defaultValue='operation'
+                          >
+                            <option value='operation' disabled>
+                              Operation
+                            </option>
+
+                            {customData1
+                              .find((item) => item.category === type1)
+                              ?.item.map((op) =>
+                                op.amount != null ? (
+                                  <option value={op.name} key={op.name}>
+                                    {op.label}
+                                  </option>
+                                ) : (
+                                  <Fragment key={op.name}></Fragment>
+                                )
+                              )}
+                          </select>
+                        </div>
 
                         <input
                           placeholder='Dare'
                           type='number'
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
                         />
 
                         <input
                           placeholder='Avere'
                           type='number'
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
                         />
                       </div>
 
                       {/* Seconda operazione */}
                       <div className='flex flex-col md:flex-row gap-2 mb-5 items-center'>
                         <p className='text-gray-900 dark:text-white'>2.</p>
-                        <select
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                          defaultValue='type'
-                          name='type2'
-                          onChange={loadOperation2}
-                        >
-                          <option value='type' disabled>
-                            Type
-                          </option>
-                          <option value='stato-patrimoniale-attivo'>
-                            Stato patrimoniale attivo
-                          </option>
-                          <option value='stato-patrimoniale-passivo'>
-                            Stato patrimoniale passivo
-                          </option>
-                          <option value='conto-economico'>
-                            Conto economico
-                          </option>
-                        </select>
-
-                        <select
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                          defaultValue='operation'
-                        >
-                          <option value='operation' disabled>
-                            Operation
-                          </option>
-                          {assetsItem.map((asset) => (
-                            <option value={asset.name} key={asset.name}>
-                              {asset.label}
+                        <div className='flex flex-col md:flex-row w-full md:w-3/5 gap-2'>
+                          <select
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                            defaultValue='type'
+                            name='type2'
+                            onChange={(event) => loadCustomData(event)}
+                          >
+                            <option value='type' disabled>
+                              Type
                             </option>
-                          ))}
-                        </select>
+                            <option value='assets'>
+                              Stato patrimoniale attivo
+                            </option>
+                            <option value='liabilities'>
+                              Stato patrimoniale passivo
+                            </option>
+                            <option value='income'>Conto economico</option>
+                          </select>
+
+                          <select
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                            defaultValue='operation'
+                          >
+                            <option value='operation' disabled>
+                              Operation
+                            </option>
+
+                            {customData2
+                              .find((item) => item.category === type2)
+                              ?.item.map((op) =>
+                                op.amount != null ? (
+                                  <option value={op.name} key={op.name}>
+                                    {op.label}
+                                  </option>
+                                ) : (
+                                  <Fragment key={op.name}></Fragment>
+                                )
+                              )}
+                          </select>
+                        </div>
 
                         <input
                           placeholder='Dare'
                           type='number'
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
                         />
 
                         <input
                           placeholder='Avere'
                           type='number'
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
                         />
                       </div>
 
                       {/* Terza operazione */}
                       <div className='flex flex-col md:flex-row gap-2 mb-5 items-center'>
                         <p className='text-gray-900 dark:text-white'>3.</p>
-                        <select
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                          defaultValue='type'
-                          name='type3'
-                          onChange={loadOperation3}
-                        >
-                          <option value='type' disabled>
-                            Type
-                          </option>
-                          <option value='stato-patrimoniale-attivo'>
-                            Stato patrimoniale attivo
-                          </option>
-                          <option value='stato-patrimoniale-passivo'>
-                            Stato patrimoniale passivo
-                          </option>
-                          <option value='conto-economico'>
-                            Conto economico
-                          </option>
-                        </select>
-
-                        <select
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                          defaultValue='operation'
-                        >
-                          <option value='operation' disabled>
-                            Operation
-                          </option>
-                          {assetsItem.map((asset) => (
-                            <option value={asset.name} key={asset.name}>
-                              {asset.label}
+                        <div className='flex flex-col md:flex-row w-full md:w-3/5 gap-2'>
+                          <select
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                            defaultValue='type'
+                            name='type3'
+                            onChange={(event) => loadCustomData(event)}
+                          >
+                            <option value='type' disabled>
+                              Type
                             </option>
-                          ))}
-                        </select>
+                            <option value='assets'>
+                              Stato patrimoniale attivo
+                            </option>
+                            <option value='liabilities'>
+                              Stato patrimoniale passivo
+                            </option>
+                            <option value='income'>Conto economico</option>
+                          </select>
+
+                          <select
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                            defaultValue='operation'
+                          >
+                            <option value='operation' disabled>
+                              Operation
+                            </option>
+
+                            {customData3
+                              .find((item) => item.category === type3)
+                              ?.item.map((op) =>
+                                op.amount != null ? (
+                                  <option value={op.name} key={op.name}>
+                                    {op.label}
+                                  </option>
+                                ) : (
+                                  <Fragment key={op.name}></Fragment>
+                                )
+                              )}
+                          </select>
+                        </div>
 
                         <input
                           placeholder='Dare'
                           type='number'
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
                         />
 
                         <input
                           placeholder='Avere'
                           type='number'
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
                         />
                       </div>
 
                       {/* Quarta operazione */}
                       <div className='flex flex-col md:flex-row gap-2 mb-5 items-center'>
                         <p className='text-gray-900 dark:text-white'>4.</p>
-                        <select
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                          defaultValue='type'
-                          name='type4'
-                          onChange={loadOperation4}
-                        >
-                          <option value='type' disabled>
-                            Type
-                          </option>
-                          <option value='stato-patrimoniale-attivo'>
-                            Stato patrimoniale attivo
-                          </option>
-                          <option value='stato-patrimoniale-passivo'>
-                            Stato patrimoniale passivo
-                          </option>
-                          <option value='conto-economico'>
-                            Conto economico
-                          </option>
-                        </select>
-
-                        <select
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                          defaultValue='operation'
-                        >
-                          <option value='operation' disabled>
-                            Operation
-                          </option>
-                          {assetsItem.map((asset) => (
-                            <option value={asset.name} key={asset.name}>
-                              {asset.label}
+                        <div className='flex flex-col md:flex-row w-full md:w-3/5 gap-2'>
+                          <select
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                            defaultValue='type'
+                            name='type4'
+                            onChange={(event) => loadCustomData(event)}
+                          >
+                            <option value='type' disabled>
+                              Type
                             </option>
-                          ))}
-                        </select>
+                            <option value='assets'>
+                              Stato patrimoniale attivo
+                            </option>
+                            <option value='liabilities'>
+                              Stato patrimoniale passivo
+                            </option>
+                            <option value='income'>Conto economico</option>
+                          </select>
+
+                          <select
+                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                            defaultValue='operation'
+                          >
+                            <option value='operation' disabled>
+                              Operation
+                            </option>
+
+                            {customData4
+                              .find((item) => item.category === type4)
+                              ?.item.map((op) =>
+                                op.amount != null ? (
+                                  <option value={op.name} key={op.name}>
+                                    {op.label}
+                                  </option>
+                                ) : (
+                                  <Fragment key={op.name}></Fragment>
+                                )
+                              )}
+                          </select>
+                        </div>
 
                         <input
                           placeholder='Dare'
                           type='number'
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
                         />
 
                         <input
                           placeholder='Avere'
                           type='number'
-                          className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
                         />
                       </div>
                     </div>
