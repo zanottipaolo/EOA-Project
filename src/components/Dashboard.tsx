@@ -1,10 +1,12 @@
 import { Dialog, Transition } from "@headlessui/react"
-import { FormEvent, Fragment, useState } from "react"
+import { FormEvent, Fragment, useEffect, useState } from "react"
 import { VscFilePdf } from "react-icons/vsc"
 
 const Dashboard = () => {
   // Hook
   const [isOpen, setIsOpen] = useState(false)
+
+  const [closeAccountingCheck, setCloseAccountingCheck] = useState(false)
 
   const [assetsItem, setAssetsItem] = useState([
     {
@@ -130,33 +132,28 @@ const Dashboard = () => {
       amount: null,
     },
     {
-      name: "d-i-commerciali",
-      label: "D. I) Commerciali",
-      amount: 0,
-    },
-    {
-      name: "d-ii-altri-debiti",
-      label: "D. II) Altri debiti",
-      amount: 0,
-    },
-    {
-      name: "d-iii-finanziari",
-      label: "D. III) Finanziari",
+      name: "d-3-finanziari",
+      label: "D. 3) Finanziari",
       amount: null,
     },
     {
-      name: "d-iii-1-debiti-bp",
-      label: "D. III. 1) Debiti BP",
+      name: "d-3-1-debiti-bp",
+      label: "D. 3. 1) Debiti BP",
       amount: 0,
     },
     {
-      name: "d-iii-2-debiti-lp",
-      label: "D. III. 2) Debiti LP",
+      name: "d-3-2-debiti-lp",
+      label: "D. 3. 2) Debiti LP",
       amount: 0,
     },
     {
-      name: "d-vi-verso-fornitori",
-      label: "D. VI) Verso fornitori",
+      name: "d-6-verso-fornitori",
+      label: "D. 6) Verso fornitori",
+      amount: 0,
+    },
+    {
+      name: "d-13-altri-debiti",
+      label: "D. 13) Altri debiti",
       amount: 0,
     },
     {
@@ -192,12 +189,17 @@ const Dashboard = () => {
       amount: 0,
     },
     {
+      name: "b-7-servizi",
+      label: "B. 7) Servizi",
+      amount: 0,
+    },
+    {
       name: "b-8-godimento-beni-terzi",
       label: "B. 8) Godimento beni terzi",
       amount: 0,
     },
     {
-      name: "b-9costo-personale",
+      name: "b-9-costo-personale",
       label: "B. 9) Costo per il personale",
       amount: 0,
     },
@@ -268,6 +270,12 @@ const Dashboard = () => {
     },
   ])
 
+  const [type1, setCustomType1] = useState("")
+  const [type2, setCustomType2] = useState("")
+  const [type3, setCustomType3] = useState("")
+  const [type4, setCustomType4] = useState("")
+
+  // Data
   const customData1 = [
     { item: assetsItem, category: "assets" },
     { item: liabilitiesItem, category: "liabilities" },
@@ -289,10 +297,40 @@ const Dashboard = () => {
     { item: incomeItems, category: "income" },
   ]
 
-  const [type1, setCustomType1] = useState("")
-  const [type2, setCustomType2] = useState("")
-  const [type3, setCustomType3] = useState("")
-  const [type4, setCustomType4] = useState("")
+  const preBuiltOp = [
+    {
+      name: "acquistoMateriale",
+      label: "Acquisto materiale",
+    },
+    {
+      name: "venditaProdotti",
+      label: "Vendita di prodotti",
+    },
+    {
+      name: "pagaStipendi",
+      label: "Paga gli stipendi",
+    },
+    {
+      name: "tfr",
+      label: "Accantonamento TFR",
+    },
+    {
+      name: "costoServizi",
+      label: "Costo dei servizi (corrente, ...)",
+    },
+    {
+      name: "proventiFinanziari",
+      label: "Proventi finanziari",
+    },
+    {
+      name: "variazioneMP",
+      label: "Variazione materie prime in magazzino",
+    },
+    {
+      name: "variazionePF",
+      label: "Variazione prodotti finiti in magazzino",
+    },
+  ]
 
   // Function
   const closeModal = () => {
@@ -305,10 +343,350 @@ const Dashboard = () => {
 
   const handleSubmit = (event: any) => {
     event.preventDefault()
-    console.log(event)
+
+    // soldi che ho in cassa
+    const cassaAmount = assetsItem.find(
+      (item) => item.name === "c-iv-cassa"
+    )?.amount
+
+    if (
+      event.target.preBuiltOpValue.value != "" &&
+      event.target.prebuilt.value != "Operation"
+    ) {
+      switch (event.target.prebuilt.value) {
+        case "acquistoMateriale":
+          // Ho il valore in DARE nel B.6 del conto economico
+          let newCostiMP = incomeItems.map((item) =>
+            item.name === "b-6-costi-materie-prime"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // Pareggio mettendo in avere il valore in D.6 dello sp passivo
+          // non metto subito l'uscita di cassa ma prima apro il debito con il fornitore,
+          // che pagherò successivamente
+          let newDebitiVersoFornitori = liabilitiesItem.map((item) =>
+            item.name === "d-6-verso-fornitori"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // se ho i soldi in cassa pago il fornitore, altrimenti rimane aperto il debito
+          if (cassaAmount! >= event.target.preBuiltOpValue.value) {
+            // Ora pago i fornitori e quindi ho in dare nello SP passivo la spesa
+            // pareggio poi con l'uscita di cassa
+            newDebitiVersoFornitori = newDebitiVersoFornitori.map((item) =>
+              item.name === "d-6-verso-fornitori"
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! - Number(event.target.preBuiltOpValue.value),
+                  }
+                : item
+            )
+
+            // ho l'uscita di cassa per pagare i fornitori
+            let newCassa = assetsItem.map((item) =>
+              item.name === "c-iv-cassa"
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! - Number(event.target.preBuiltOpValue.value),
+                  }
+                : item
+            )
+
+            setAssetsItem(newCassa)
+          }
+
+          setIncomeItems(newCostiMP)
+          setLiabilitiesItem(newDebitiVersoFornitori)
+
+          break
+
+        case "venditaProdotti":
+          // Mi aumenta l'avere nel conto economico A.1 ricavi da vendita
+          let newRicaviPF = incomeItems.map((item) =>
+            item.name === "a-1-ricavi-dalle-vendite"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // Pareggio con il credito verso soci
+          let newCreditoVersoSoci = assetsItem.map((item) =>
+            item.name === "c-i-1-verso-clienti"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // il credito mi viene pagato
+          newCreditoVersoSoci = newCreditoVersoSoci.map((item) =>
+            item.name === "c-i-1-verso-clienti"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! - Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // pareggio con l'aumenti in cassa
+          let newCassaSA = newCreditoVersoSoci.map((item) =>
+            item.name === "c-iv-cassa"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          setIncomeItems(newRicaviPF)
+          setAssetsItem(newCassaSA)
+
+          break
+
+        case "pagaStipendi":
+          // Ho in dare il costo del personale nel conto economico (mi aumenta)
+          let newCEpersonale = incomeItems.map((item) =>
+            item.name === "b-9-costo-personale"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // pareggio mettendo in avere il debito nello stato patrimoniale passivo altri debiti
+          let newSPdebiti = liabilitiesItem.map((item) =>
+            item.name === "d-13-altri-debiti"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // se ho i soldi in cassa pago i dipendenti e risolvo il debito
+          if (cassaAmount! >= event.target.preBuiltOpValue.value) {
+            // tolgo il debito con i dipendenti
+            newSPdebiti = newSPdebiti.map((item) =>
+              item.name === "d-13-altri-debiti"
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! - Number(event.target.preBuiltOpValue.value),
+                  }
+                : item
+            )
+
+            // pareggio con l'uscita di cassa
+            let newSAcassa = assetsItem.map((item) =>
+              item.name === "c-iv-cassa"
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! - Number(event.target.preBuiltOpValue.value),
+                  }
+                : item
+            )
+
+            setAssetsItem(newSAcassa)
+          }
+
+          setIncomeItems(newCEpersonale)
+          setLiabilitiesItem(newSPdebiti)
+
+          break
+
+        case "tfr":
+          // accantono il tfr, ho in avere nel C dello stato patrimoniale passivo
+          let newTFRsp = liabilitiesItem.map((item) =>
+            item.name === "c-tfr"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // pareggio mettendolo come costo del personale nel conto economico
+          let newSPperosnale = incomeItems.map((item) =>
+            item.name === "b-9-costo-personale"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          setLiabilitiesItem(newTFRsp)
+          setIncomeItems(newSPperosnale)
+
+          break
+
+        case "costoServizi":
+          // Metto nel dare la voce nel conto economico (B.7, costo dei servizi)
+          let newCostiCE = incomeItems.map((item) =>
+            item.name === "b-7-servizi"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // pareggio creando un debito con il fornitore nello stato patrimoniale passivo
+          let newSPdebitoFornitore = liabilitiesItem.map((item) =>
+            item.name === "d-6-verso-fornitori"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // se ho i soldi in cassa allora pago i fornitori
+          if (cassaAmount! >= event.target.preBuiltOpValue.value) {
+            // ho in avere il debito di primo, quindi lo azzero
+            newSPdebitoFornitore = newSPdebitoFornitore.map((item) =>
+              item.name === "d-6-verso-fornitori"
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! - Number(event.target.preBuiltOpValue.value),
+                  }
+                : item
+            )
+
+            // pareggio pagando con la cassa
+            let newCassaStatoSA = assetsItem.map((item) =>
+              item.name === "c-iv-cassa"
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! - Number(event.target.preBuiltOpValue.value),
+                  }
+                : item
+            )
+
+            setAssetsItem(newCassaStatoSA)
+          }
+
+          setIncomeItems(newCostiCE)
+          setLiabilitiesItem(newSPdebitoFornitore)
+          break
+
+        case "proventiFinanziari":
+          // Messo nel dare del conto economico, C.15
+          let newCEProventi = incomeItems.map((item) =>
+            item.name === "c-15-proventi-partecipazioni"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // pareggio andando ad aumentare la cassa
+          let newCassaStatoSA = assetsItem.map((item) =>
+            item.name === "c-iv-cassa"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          setIncomeItems(newCEProventi)
+          setAssetsItem(newCassaStatoSA)
+
+          break
+
+        case "variazioneMP":
+          // aumento la variazione di materie prime nel conto economico (costo)
+          let newCEvarMP = incomeItems.map((item) =>
+            item.name === "b-11-variazione-rimanenze-mp"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // pareggio mettendo le nuove scorte nell'attivo circolante dello stato patrimoniale
+          let newSPAscorteMP = assetsItem.map((item) =>
+            item.name === "c-i-1-materie-prime"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          setIncomeItems(newCEvarMP)
+          setAssetsItem(newSPAscorteMP)
+          break
+        
+        case "variazionePF":
+          // aumento la variazione di prodotti finiti nel conto economico (ricavo)
+          let newCEvarPF = incomeItems.map((item) =>
+            item.name === "a-2-variazioni-prodotti"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          // pareggio mettendo le nuove scorte nell'attivo circolante dello stato patrimoniale
+          let newSPAscortePF = assetsItem.map((item) =>
+            item.name === "c-i-4-prodotti-finiti"
+              ? {
+                  ...item,
+                  amount:
+                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                }
+              : item
+          )
+
+          setIncomeItems(newCEvarPF)
+          setAssetsItem(newSPAscortePF)
+          break
+      }
+    }
+
     closeModal()
   }
 
+  // Load custom operation based on category
   const loadCustomData = (event: FormEvent<HTMLSelectElement>) => {
     switch (event.target.name) {
       case "type1":
@@ -326,42 +704,45 @@ const Dashboard = () => {
     }
   }
 
-  // Data
-  const preBuiltOp = [
-    {
-      name: "aumentoCapitale",
-      label: "Aumento di capitale",
-    },
-    {
-      name: "pagaStipendi",
-      label: "Paga gli stipendi",
-    },
-    {
-      name: "ammortamento",
-      label: "Ammortamento",
-    },
-  ]
+  // Checkbox to set if the accounting is close (and calculate taxes)
+  const closeAccounting = () => {
+    setCloseAccountingCheck(!closeAccountingCheck)
+  }
 
   return (
     <div className='flex flex-col items-center justify-center py-5'>
-      <div className='flex flex-col md:flex-row gap-x-5 my-5'>
-        {/* Add Item */}
-        <button
-          type='button'
-          onClick={openModal}
-          className='font-bold uppercase mt-5 rounded-lg bg-teal-600 p-3 hover:bg-teal-700 transition-colors text-white shadow-md'
-        >
-          new transaction
-        </button>
+      {/* Pulsanti */}
+      <div className='flex flex-col justify-center items-center'>
+        <div className='flex flex-col md:flex-row gap-x-5 my-5 items-center'>
+          {/* Add Item */}
+          <button
+            type='button'
+            onClick={openModal}
+            className='font-bold uppercase mt-5 rounded-lg bg-teal-600 p-3 hover:bg-teal-700 transition-colors text-white shadow-md'
+          >
+            new transaction
+          </button>
 
-        {/* Download PDF */}
-        <button
-          type='button'
-          className='font-bold mt-5 flex gap-x-3 rounded-lg bg-red-400 p-3 hover:bg-red-500 transition-colors text-white shadow-md'
-        >
-          DOWNLOAD PDF
-          <VscFilePdf className='text-white h-6 w-6' />
-        </button>
+          {/* Download PDF */}
+          <button
+            type='button'
+            className='font-bold mt-5 flex gap-x-3 rounded-lg bg-red-400 p-3 hover:bg-red-500 transition-colors text-white shadow-md'
+          >
+            DOWNLOAD PDF
+            <VscFilePdf className='text-white h-6 w-6' />
+          </button>
+        </div>
+
+        <div>
+          <input
+            type='checkbox'
+            name='closeBalance'
+            id='close-balance'
+            className='mr-2'
+            onChange={() => closeAccounting()}
+          />
+          <label htmlFor='close-balance'>Close accounting</label>
+        </div>
       </div>
 
       {/* Stato patrimoniale */}
@@ -383,19 +764,27 @@ const Dashboard = () => {
                 </span>
               </p>
             </div>
-            <table className='min-w-full divide-y-2 divide-gray-200 text-sm'>
+            <table
+              className={`min-w-full divide-y-2 divide-gray-200 text-sm ${
+                closeAccountingCheck
+                  ? "text-gray-400"
+                  : "text-gray-700 dark:text-gray-200"
+              }`}
+            >
               <tbody className='divide-y divide-gray-200'>
                 {assetsItem.map((asset) => (
                   <tr key={asset.name}>
-                    <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
+                    <td className='whitespace-nowrap px-4 py-2 font-medium'>
                       <p
                         className={`${asset.amount != null ? "" : "font-bold"}`}
                       >
                         {asset.label}
                       </p>
                     </td>
-                    <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                      <p>{asset.amount != null ? asset.amount : ""}</p>
+                    <td className='whitespace-nowrap px-4 py-2'>
+                      <p className='text-center'>
+                        {asset.amount != null ? asset.amount : ""}
+                      </p>
                     </td>
                   </tr>
                 ))}
@@ -418,11 +807,17 @@ const Dashboard = () => {
                 </span>
               </p>
             </div>
-            <table className='min-w-full divide-y-2 divide-gray-200 text-sm'>
+            <table
+              className={`min-w-full divide-y-2 divide-gray-200 text-sm ${
+                closeAccountingCheck
+                  ? "text-gray-400"
+                  : "text-gray-700 dark:text-gray-200"
+              }`}
+            >
               <tbody className='divide-y divide-gray-200'>
                 {liabilitiesItem.map((liabilities) => (
                   <tr key={liabilities.name}>
-                    <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
+                    <td className='whitespace-nowrap px-4 py-2 font-medium'>
                       <p
                         className={`${
                           liabilities.amount != null ? "" : "font-bold"
@@ -431,8 +826,8 @@ const Dashboard = () => {
                         {liabilities.label}
                       </p>
                     </td>
-                    <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                      <p>
+                    <td className='whitespace-nowrap px-4 py-2'>
+                      <p className='text-center'>
                         {liabilities.amount != null ? liabilities.amount : ""}
                       </p>
                     </td>
@@ -449,19 +844,27 @@ const Dashboard = () => {
         <h2 className='font-bold text-2xl'>Income statement</h2>
 
         <div className='overflow-x-auto md:p-12 w-full md:w-1/2 md:m-auto'>
-          <table className='min-w-full divide-y-2 divide-gray-200 text-sm'>
+          <table
+            className={`min-w-full divide-y-2 divide-gray-200 text-sm ${
+              closeAccountingCheck
+                ? "text-gray-400"
+                : "text-gray-700 dark:text-gray-200"
+            }`}
+          >
             <tbody className='divide-y divide-gray-200'>
               {incomeItems.map((income) => (
                 <tr key={income.name}>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-gray-200'>
+                  <td className='whitespace-nowrap px-4 py-2 font-medium'>
                     <p
                       className={`${income.amount != null ? "" : "font-bold"}`}
                     >
                       {income.label}
                     </p>
                   </td>
-                  <td className='whitespace-nowrap px-4 py-2 text-gray-700 dark:text-gray-200'>
-                    <p>{income.amount != null ? income.amount : ""}</p>
+                  <td className='whitespace-nowrap px-4 py-2'>
+                    <p className='text-center'>
+                      {income.amount != null ? income.amount : ""}
+                    </p>
                   </td>
                 </tr>
               ))}
@@ -511,6 +914,7 @@ const Dashboard = () => {
                       </h4>
                       <div className='flex flex-col sm:flex-row gap-2'>
                         <select
+                          name='preBuiltOp'
                           className='p-2 w-full md:w-1/2 border-2 rounded-lg dark:bg-gray-500 dark:text-white'
                           defaultValue='Operation'
                           name='prebuilt'
@@ -526,8 +930,9 @@ const Dashboard = () => {
                         </select>
 
                         <input
-                          placeholder='Value'
+                          placeholder='Value (€)'
                           type='number'
+                          id='preBuiltOpValue'
                           className='p-2 w-full md:w-1/2 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
                         />
                       </div>
