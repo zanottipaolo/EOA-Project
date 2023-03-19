@@ -9,6 +9,8 @@ const Dashboard = () => {
 
   const [closeAccountingCheck, setCloseAccountingCheck] = useState(false)
 
+  const [preBuiltCheck, setPreBuiltCheck] = useState(true)
+
   const [assetsItem, setAssetsItem] = useState(
     JSON.parse(localStorage.getItem("assetsItem")!) ?? [
       {
@@ -122,7 +124,7 @@ const Dashboard = () => {
       },
       {
         name: "b-ii-imposte",
-        label: "B. II) Imposte",
+        label: "B. II) Imposte (IRES 24%, IRAP 3,9%)",
         amount: 0,
       },
       {
@@ -371,7 +373,8 @@ const Dashboard = () => {
 
     if (
       event.target.preBuiltOpValue.value != "" &&
-      event.target.prebuilt.value != "Operation"
+      event.target.prebuilt.value != "Operation" &&
+      event.target.opRadio[0].checked
     ) {
       switch (event.target.prebuilt.value) {
         case "acquistoMateriale":
@@ -701,9 +704,269 @@ const Dashboard = () => {
           setAssetsItem(newSPAscortePF)
           break
       }
-    }
+      closeModal()
+    } else if (event.target.opRadio[1].checked) {
+      let assetsAmount = 0
+      let liabilitiesAmount = 0
+      let incomeAmount = 0
 
-    closeModal()
+      switch (event.target.type1[0].value) {
+        case "assets":
+          assetsAmount +=
+            Number(event.target.type1[2].value) -
+            Number(event.target.type1[3].value)
+          break
+        case "liabilities":
+          liabilitiesAmount +=
+            Number(event.target.type1[2].value) -
+            Number(event.target.type1[3].value)
+          break
+        case "income":
+          incomeAmount +=
+            Number(event.target.type1[2].value) -
+            Number(event.target.type1[3].value)
+          break
+      }
+
+      switch (event.target.type2[0].value) {
+        case "assets":
+          assetsAmount +=
+            Number(event.target.type2[2].value) -
+            Number(event.target.type2[3].value)
+          break
+        case "liabilities":
+          liabilitiesAmount +=
+            Number(event.target.type2[2].value) -
+            Number(event.target.type2[3].value)
+          break
+        case "income":
+          incomeAmount +=
+            Number(event.target.type2[2].value) -
+            Number(event.target.type2[3].value)
+          break
+      }
+
+      switch (event.target.type3[0].value) {
+        case "assets":
+          assetsAmount +=
+            Number(event.target.type3[2].value) -
+            Number(event.target.type3[3].value)
+          break
+        case "liabilities":
+          liabilitiesAmount +=
+            Number(event.target.type3[2].value) -
+            Number(event.target.type3[3].value)
+          break
+        case "income":
+          incomeAmount +=
+            Number(event.target.type3[2].value) -
+            Number(event.target.type3[3].value)
+          break
+      }
+
+      switch (event.target.type4[0].value) {
+        case "assets":
+          assetsAmount +=
+            Number(event.target.type4[2].value) -
+            Number(event.target.type4[3].value)
+          break
+        case "liabilities":
+          liabilitiesAmount +=
+            Number(event.target.type4[2].value) -
+            Number(event.target.type4[3].value)
+          break
+        case "income":
+          incomeAmount +=
+            Number(event.target.type4[2].value) -
+            Number(event.target.type4[3].value)
+          break
+      }
+
+      // se c'è pareggio allora aggiorno i dati
+      // = le categorie che modifico devono avere lo stesso importo
+      if (
+        (assetsAmount === liabilitiesAmount * -1 && assetsAmount != 0) ||
+        (liabilitiesAmount === incomeAmount * -1 && liabilitiesAmount != 0) ||
+        (incomeAmount === assetsAmount * -1 && incomeAmount != 0)
+      ) {
+        let newAssestsCustom = assetsItem
+        let newLiabilitiesCustom = liabilitiesItem
+        let newIncomeCustom = incomeItems
+
+        switch (event.target.type1[0].value) {
+          case "assets":
+            newAssestsCustom = newAssestsCustom.map((item) =>
+              item.name === event.target.type1[1].value
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! +
+                      (Number(event.target.type1[2].value) -
+                        Number(event.target.type1[3].value)),
+                  }
+                : item
+            )
+            break
+          case "liabilities":
+            newLiabilitiesCustom = newLiabilitiesCustom.map((item) =>
+              item.name === event.target.type1[1].value
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! +
+                      (Number(event.target.type1[3].value) -
+                        Number(event.target.type1[2].value)),
+                  }
+                : item
+            )
+            break
+          case "income":
+            newIncomeCustom = newIncomeCustom.map((item) =>
+              item.name === event.target.type1[1].value
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! +
+                      Math.abs((Number(event.target.type1[2].value) -
+                        Number(event.target.type1[3].value))),
+                  }
+                : item
+            )
+            break
+        }
+
+        switch (event.target.type2[0].value) {
+          case "assets":
+            newAssestsCustom = newAssestsCustom.map((item) =>
+              item.name === event.target.type2[1].value
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! +
+                      (Number(event.target.type2[2].value) -
+                        Number(event.target.type2[3].value)),
+                  }
+                : item
+            )
+            break
+          case "liabilities":
+            newLiabilitiesCustom = newLiabilitiesCustom.map((item) =>
+              item.name === event.target.type2[1].value
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! +
+                      (Number(event.target.type2[3].value) -
+                        Number(event.target.type2[2].value)),
+                  }
+                : item
+            )
+            break
+          case "income":
+            newIncomeCustom = newIncomeCustom.map((item) =>
+              item.name === event.target.type2[1].value
+                ? {
+                    ...item,
+                    amount: Math.abs(
+                      Number(event.target.type2[2].value) -
+                        Number(event.target.type2[3].value)
+                    ),
+                  }
+                : item
+            )
+            break
+        }
+
+        switch (event.target.type3[0].value) {
+          case "assets":
+            newAssestsCustom = newAssestsCustom.map((item) =>
+              item.name === event.target.type3[1].value
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! +
+                      (Number(event.target.type3[2].value) -
+                        Number(event.target.type3[3].value)),
+                  }
+                : item
+            )
+            break
+          case "liabilities":
+            newLiabilitiesCustom = newLiabilitiesCustom.map((item) =>
+              item.name === event.target.type3[1].value
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! +
+                      (Number(event.target.type3[3].value) -
+                        Number(event.target.type3[2].value)),
+                  }
+                : item
+            )
+            break
+          case "income":
+            newIncomeCustom = newIncomeCustom.map((item) =>
+              item.name === event.target.type3[1].value
+                ? {
+                    ...item,
+                    amount: Math.abs(
+                      Number(event.target.type3[2].value) -
+                        Number(event.target.type3[3].value)
+                    ),
+                  }
+                : item
+            )
+        }
+
+        switch (event.target.type4[0].value) {
+          case "assets":
+            newAssestsCustom = newAssestsCustom.map((item) =>
+              item.name === event.target.type4[1].value
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! +
+                      (Number(event.target.type4[2].value) -
+                        Number(event.target.type4[3].value)),
+                  }
+                : item
+            )
+            break
+          case "liabilities":
+            newLiabilitiesCustom = newLiabilitiesCustom.map((item) =>
+              item.name === event.target.type4[1].value
+                ? {
+                    ...item,
+                    amount:
+                      item.amount! +
+                      (Number(event.target.type4[3].value) -
+                        Number(event.target.type4[2].value)),
+                  }
+                : item
+            )
+            break
+          case "income":
+            newIncomeCustom = newIncomeCustom.map((item) =>
+              item.name === event.target.type4[1].value
+                ? {
+                    ...item,
+                    amount: Math.abs(
+                      Number(event.target.type4[2].value) -
+                        Number(event.target.type4[3].value)
+                    ),
+                  }
+                : item
+            )
+            break
+        }
+
+        setAssetsItem(newAssestsCustom)
+        setLiabilitiesItem(newLiabilitiesCustom)
+        setIncomeItems(newIncomeCustom)
+
+        closeModal()
+      }
+    }
   }
 
   // Load custom operation based on category
@@ -813,10 +1076,9 @@ const Dashboard = () => {
               disabled={closeAccountingCheck ? true : false}
               type='button'
               onClick={clearData}
-              className='transition-colors font-bold uppercase mt-5 rounded-lg bg-red-400 p-3 hover:bg-red-500 disabled:bg-gray-300 text-white shadow-md flex justify-center'
+              className='transition-colors flex items-center font-bold uppercase mt-5 rounded-lg bg-red-400 p-3 hover:bg-red-500 disabled:bg-gray-300 text-white shadow-md flex justify-center'
             >
               <MdOutlineFormatClear className='w-6 h-6 ' />
-              
             </button>
           </div>
 
@@ -831,7 +1093,7 @@ const Dashboard = () => {
           </button>
         </div>
 
-        <div>
+        <div className='p-5 md;p-0'>
           <input
             type='checkbox'
             name='closeBalance'
@@ -1020,277 +1282,363 @@ const Dashboard = () => {
                   </Dialog.Title>
                   <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
                     {/* Pre-built  */}
-                    <div className='mt-2'>
-                      <h4 className='text-gray-900 dark:text-white'>
-                        Pre-built operation
-                      </h4>
-                      <div className='flex flex-col sm:flex-row gap-2'>
-                        <select
-                          name='preBuiltOp'
-                          className='p-2 w-full md:w-1/2 border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                          defaultValue='Operation'
-                          name='prebuilt'
-                        >
-                          <option value='Operation' disabled>
-                            Operation
-                          </option>
-                          {preBuiltOp.map((item) => (
-                            <option value={item.name} key={item.label}>
-                              {item.label}
-                            </option>
-                          ))}
-                        </select>
+                    <div>
+                      <input
+                        type='radio'
+                        name='opRadio'
+                        id='preBuiltRadioID'
+                        className='peer hidden [&:checked_+_label_svg]:block'
+                        onChange={() => setPreBuiltCheck(true)}
+                        checked={preBuiltCheck}
+                      />
+                      <label
+                        htmlFor='preBuiltRadioID'
+                        className='block cursor-pointer rounded-lg border border-gray-100 p-4 text-sm font-medium shadow-sm hover:border-gray-200 peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500'
+                      >
+                        <div className='mt-2'>
+                          <div className='flex gap-2 items-center mb-2'>
+                            <h4 className='text-gray-900 dark:text-white'>
+                              Pre-built operation
+                            </h4>
+                            <svg
+                              className='hidden h-5 w-5 text-blue-600'
+                              xmlns='http://www.w3.org/2000/svg'
+                              viewBox='0 0 20 20'
+                              fill='currentColor'
+                            >
+                              <path
+                                fillRule='evenodd'
+                                d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                                clipRule='evenodd'
+                              />
+                            </svg>
+                          </div>
 
-                        <input
-                          placeholder='Value (€)'
-                          type='number'
-                          id='preBuiltOpValue'
-                          className='p-2 w-full md:w-1/2 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
-                        />
-                      </div>
+                          <div className='flex flex-col sm:flex-row gap-2'>
+                            <select
+                              name='prebuilt'
+                              className='p-2 w-full md:w-1/2 border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                              defaultValue='Operation'
+                              disabled={!preBuiltCheck}
+                            >
+                              <option value='Operation' disabled>
+                                Operation
+                              </option>
+                              {preBuiltOp.map((item) => (
+                                <option value={item.name} key={item.label}>
+                                  {item.label}
+                                </option>
+                              ))}
+                            </select>
+
+                            <input
+                              placeholder='Value (€)'
+                              type='number'
+                              id='preBuiltOpValue'
+                              className='p-2 w-full md:w-1/2 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                              disabled={!preBuiltCheck}
+                            />
+                          </div>
+                        </div>
+                      </label>
                     </div>
 
                     {/* Custom */}
-                    <div className='mt-2'>
-                      <div className='flex gap-2 items-center mb-2'>
-                        <h4 className='text-gray-900 dark:text-white'>
-                          Custom operation
-                        </h4>
-                      </div>
+                    <div>
+                      <input
+                        type='radio'
+                        name='opRadio'
+                        id='customRadioID'
+                        className='peer hidden [&:checked_+_label_svg]:block'
+                        onChange={() => setPreBuiltCheck(false)}
+                        checked={!preBuiltCheck}
+                      />
+                      <label
+                        htmlFor='customRadioID'
+                        className='block cursor-pointer rounded-lg border border-gray-100 p-4 text-sm font-medium shadow-sm hover:border-gray-200 peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500'
+                      >
+                        <div className='mt-2'>
+                          <div className='flex gap-2 items-center mb-2'>
+                            <h4 className='text-gray-900 dark:text-white'>
+                              Custom operation
+                            </h4>
+                            <svg
+                              className='hidden h-5 w-5 text-blue-600'
+                              xmlns='http://www.w3.org/2000/svg'
+                              viewBox='0 0 20 20'
+                              fill='currentColor'
+                            >
+                              <path
+                                fillRule='evenodd'
+                                d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                                clipRule='evenodd'
+                              />
+                            </svg>
+                          </div>
 
-                      {/* Prima operazione */}
-                      <div className='flex flex-col md:flex-row gap-2 mb-5 items-center'>
-                        <p className='text-gray-900 dark:text-white'>1.</p>
-                        <div className='flex flex-col md:flex-row w-full md:w-3/5 gap-2'>
-                          <select
-                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                            defaultValue='type'
-                            name='type1'
-                            onChange={(event) => loadCustomData(event)}
-                          >
-                            <option value='type' disabled>
-                              Type
-                            </option>
-                            <option value='assets'>
-                              Stato patrimoniale attivo
-                            </option>
-                            <option value='liabilities'>
-                              Stato patrimoniale passivo
-                            </option>
-                            <option value='income'>Conto economico</option>
-                          </select>
+                          {/* Prima operazione */}
+                          <div className='flex flex-col md:flex-row gap-2 mb-5 items-center'>
+                            <p className='text-gray-900 dark:text-white'>1.</p>
+                            <div className='flex flex-col md:flex-row w-full md:w-3/5 gap-2'>
+                              <select
+                                className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                                defaultValue='type'
+                                name='type1'
+                                onChange={(event) => loadCustomData(event)}
+                                disabled={preBuiltCheck}
+                              >
+                                <option value='type' disabled>
+                                  Type
+                                </option>
+                                <option value='assets'>
+                                  Stato patrimoniale attivo
+                                </option>
+                                <option value='liabilities'>
+                                  Stato patrimoniale passivo
+                                </option>
+                                <option value='income'>Conto economico</option>
+                              </select>
 
-                          <select
-                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                            defaultValue='operation'
-                          >
-                            <option value='operation' disabled>
-                              Operation
-                            </option>
+                              <select
+                                className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                                defaultValue='operation'
+                                name='type1'
+                                disabled={preBuiltCheck}
+                              >
+                                <option value='operation' disabled>
+                                  Operation
+                                </option>
 
-                            {customData1
-                              .find((item) => item.category === type1)
-                              ?.item.map((op) =>
-                                op.amount != null ? (
-                                  <option value={op.name} key={op.name}>
-                                    {op.label}
-                                  </option>
-                                ) : (
-                                  <Fragment key={op.name}></Fragment>
-                                )
-                              )}
-                          </select>
+                                {customData1
+                                  .find((item) => item.category === type1)
+                                  ?.item.map((op) =>
+                                    op.amount != null ? (
+                                      <option value={op.name} key={op.name}>
+                                        {op.label}
+                                      </option>
+                                    ) : (
+                                      <Fragment key={op.name}></Fragment>
+                                    )
+                                  )}
+                              </select>
+                            </div>
+
+                            <input
+                              placeholder='Dare'
+                              type='number'
+                              name='type1'
+                              className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                              disabled={preBuiltCheck}
+                            />
+
+                            <input
+                              placeholder='Avere'
+                              type='number'
+                              name='type1'
+                              className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                              disabled={preBuiltCheck}
+                            />
+                          </div>
+
+                          {/* Seconda operazione */}
+                          <div className='flex flex-col md:flex-row gap-2 mb-5 items-center'>
+                            <p className='text-gray-900 dark:text-white'>2.</p>
+                            <div className='flex flex-col md:flex-row w-full md:w-3/5 gap-2'>
+                              <select
+                                className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                                defaultValue='type'
+                                name='type2'
+                                onChange={(event) => loadCustomData(event)}
+                                disabled={preBuiltCheck}
+                              >
+                                <option value='type' disabled>
+                                  Type
+                                </option>
+                                <option value='assets'>
+                                  Stato patrimoniale attivo
+                                </option>
+                                <option value='liabilities'>
+                                  Stato patrimoniale passivo
+                                </option>
+                                <option value='income'>Conto economico</option>
+                              </select>
+
+                              <select
+                                className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                                defaultValue='operation'
+                                disabled={preBuiltCheck}
+                                name='type2'
+                              >
+                                <option value='operation' disabled>
+                                  Operation
+                                </option>
+
+                                {customData2
+                                  .find((item) => item.category === type2)
+                                  ?.item.map((op) =>
+                                    op.amount != null ? (
+                                      <option value={op.name} key={op.name}>
+                                        {op.label}
+                                      </option>
+                                    ) : (
+                                      <Fragment key={op.name}></Fragment>
+                                    )
+                                  )}
+                              </select>
+                            </div>
+
+                            <input
+                              placeholder='Dare'
+                              type='number'
+                              name='type2'
+                              className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                              disabled={preBuiltCheck}
+                            />
+
+                            <input
+                              placeholder='Avere'
+                              type='number'
+                              name='type2'
+                              className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                              disabled={preBuiltCheck}
+                            />
+                          </div>
+
+                          {/* Terza operazione */}
+                          <div className='flex flex-col md:flex-row gap-2 mb-5 items-center'>
+                            <p className='text-gray-900 dark:text-white'>3.</p>
+                            <div className='flex flex-col md:flex-row w-full md:w-3/5 gap-2'>
+                              <select
+                                className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                                defaultValue='type'
+                                name='type3'
+                                onChange={(event) => loadCustomData(event)}
+                                disabled={preBuiltCheck}
+                              >
+                                <option value='type' disabled>
+                                  Type
+                                </option>
+                                <option value='assets'>
+                                  Stato patrimoniale attivo
+                                </option>
+                                <option value='liabilities'>
+                                  Stato patrimoniale passivo
+                                </option>
+                                <option value='income'>Conto economico</option>
+                              </select>
+
+                              <select
+                                className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                                defaultValue='operation'
+                                name='type3'
+                                disabled={preBuiltCheck}
+                              >
+                                <option value='operation' disabled>
+                                  Operation
+                                </option>
+
+                                {customData3
+                                  .find((item) => item.category === type3)
+                                  ?.item.map((op) =>
+                                    op.amount != null ? (
+                                      <option value={op.name} key={op.name}>
+                                        {op.label}
+                                      </option>
+                                    ) : (
+                                      <Fragment key={op.name}></Fragment>
+                                    )
+                                  )}
+                              </select>
+                            </div>
+
+                            <input
+                              placeholder='Dare'
+                              type='number'
+                              name='type3'
+                              className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                              disabled={preBuiltCheck}
+                            />
+
+                            <input
+                              placeholder='Avere'
+                              type='number'
+                              name='type3'
+                              className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                              disabled={preBuiltCheck}
+                            />
+                          </div>
+
+                          {/* Quarta operazione */}
+                          <div className='flex flex-col md:flex-row gap-2 mb-5 items-center'>
+                            <p className='text-gray-900 dark:text-white'>4.</p>
+                            <div className='flex flex-col md:flex-row w-full md:w-3/5 gap-2'>
+                              <select
+                                className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                                defaultValue='type'
+                                name='type4'
+                                onChange={(event) => loadCustomData(event)}
+                                disabled={preBuiltCheck}
+                              >
+                                <option value='type' disabled>
+                                  Type
+                                </option>
+                                <option value='assets'>
+                                  Stato patrimoniale attivo
+                                </option>
+                                <option value='liabilities'>
+                                  Stato patrimoniale passivo
+                                </option>
+                                <option value='income'>Conto economico</option>
+                              </select>
+
+                              <select
+                                className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
+                                defaultValue='operation'
+                                disabled={preBuiltCheck}
+                                name='type4'
+                              >
+                                <option value='operation' disabled>
+                                  Operation
+                                </option>
+
+                                {customData4
+                                  .find((item) => item.category === type4)
+                                  ?.item.map((op) =>
+                                    op.amount != null ? (
+                                      <option value={op.name} key={op.name}>
+                                        {op.label}
+                                      </option>
+                                    ) : (
+                                      <Fragment key={op.name}></Fragment>
+                                    )
+                                  )}
+                              </select>
+                            </div>
+
+                            <input
+                              placeholder='Dare'
+                              type='number'
+                              name='type4'
+                              className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                              disabled={preBuiltCheck}
+                            />
+
+                            <input
+                              placeholder='Avere'
+                              type='number'
+                              name='type4'
+                              className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
+                              disabled={preBuiltCheck}
+                            />
+                          </div>
                         </div>
-
-                        <input
-                          placeholder='Dare'
-                          type='number'
-                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
-                        />
-
-                        <input
-                          placeholder='Avere'
-                          type='number'
-                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
-                        />
-                      </div>
-
-                      {/* Seconda operazione */}
-                      <div className='flex flex-col md:flex-row gap-2 mb-5 items-center'>
-                        <p className='text-gray-900 dark:text-white'>2.</p>
-                        <div className='flex flex-col md:flex-row w-full md:w-3/5 gap-2'>
-                          <select
-                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                            defaultValue='type'
-                            name='type2'
-                            onChange={(event) => loadCustomData(event)}
-                          >
-                            <option value='type' disabled>
-                              Type
-                            </option>
-                            <option value='assets'>
-                              Stato patrimoniale attivo
-                            </option>
-                            <option value='liabilities'>
-                              Stato patrimoniale passivo
-                            </option>
-                            <option value='income'>Conto economico</option>
-                          </select>
-
-                          <select
-                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                            defaultValue='operation'
-                          >
-                            <option value='operation' disabled>
-                              Operation
-                            </option>
-
-                            {customData2
-                              .find((item) => item.category === type2)
-                              ?.item.map((op) =>
-                                op.amount != null ? (
-                                  <option value={op.name} key={op.name}>
-                                    {op.label}
-                                  </option>
-                                ) : (
-                                  <Fragment key={op.name}></Fragment>
-                                )
-                              )}
-                          </select>
-                        </div>
-
-                        <input
-                          placeholder='Dare'
-                          type='number'
-                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
-                        />
-
-                        <input
-                          placeholder='Avere'
-                          type='number'
-                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
-                        />
-                      </div>
-
-                      {/* Terza operazione */}
-                      <div className='flex flex-col md:flex-row gap-2 mb-5 items-center'>
-                        <p className='text-gray-900 dark:text-white'>3.</p>
-                        <div className='flex flex-col md:flex-row w-full md:w-3/5 gap-2'>
-                          <select
-                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                            defaultValue='type'
-                            name='type3'
-                            onChange={(event) => loadCustomData(event)}
-                          >
-                            <option value='type' disabled>
-                              Type
-                            </option>
-                            <option value='assets'>
-                              Stato patrimoniale attivo
-                            </option>
-                            <option value='liabilities'>
-                              Stato patrimoniale passivo
-                            </option>
-                            <option value='income'>Conto economico</option>
-                          </select>
-
-                          <select
-                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                            defaultValue='operation'
-                          >
-                            <option value='operation' disabled>
-                              Operation
-                            </option>
-
-                            {customData3
-                              .find((item) => item.category === type3)
-                              ?.item.map((op) =>
-                                op.amount != null ? (
-                                  <option value={op.name} key={op.name}>
-                                    {op.label}
-                                  </option>
-                                ) : (
-                                  <Fragment key={op.name}></Fragment>
-                                )
-                              )}
-                          </select>
-                        </div>
-
-                        <input
-                          placeholder='Dare'
-                          type='number'
-                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
-                        />
-
-                        <input
-                          placeholder='Avere'
-                          type='number'
-                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
-                        />
-                      </div>
-
-                      {/* Quarta operazione */}
-                      <div className='flex flex-col md:flex-row gap-2 mb-5 items-center'>
-                        <p className='text-gray-900 dark:text-white'>4.</p>
-                        <div className='flex flex-col md:flex-row w-full md:w-3/5 gap-2'>
-                          <select
-                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                            defaultValue='type'
-                            name='type4'
-                            onChange={(event) => loadCustomData(event)}
-                          >
-                            <option value='type' disabled>
-                              Type
-                            </option>
-                            <option value='assets'>
-                              Stato patrimoniale attivo
-                            </option>
-                            <option value='liabilities'>
-                              Stato patrimoniale passivo
-                            </option>
-                            <option value='income'>Conto economico</option>
-                          </select>
-
-                          <select
-                            className='p-2 w-full border-2 rounded-lg dark:bg-gray-500 dark:text-white'
-                            defaultValue='operation'
-                          >
-                            <option value='operation' disabled>
-                              Operation
-                            </option>
-
-                            {customData4
-                              .find((item) => item.category === type4)
-                              ?.item.map((op) =>
-                                op.amount != null ? (
-                                  <option value={op.name} key={op.name}>
-                                    {op.label}
-                                  </option>
-                                ) : (
-                                  <Fragment key={op.name}></Fragment>
-                                )
-                              )}
-                          </select>
-                        </div>
-
-                        <input
-                          placeholder='Dare'
-                          type='number'
-                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
-                        />
-
-                        <input
-                          placeholder='Avere'
-                          type='number'
-                          className='p-2 w-full md:w-1/5 border-2 rounded-lg dark:bg-gray-500 dark:placeholder:text-gray-100 dark:text-white'
-                        />
-                      </div>
+                      </label>
                     </div>
 
                     <div className='mt-4'>
                       <button
                         type='submit'
-                        className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-teal-600 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+                        className='inline-flex w-full md:w-auto justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-teal-600 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
                       >
                         Insert
                       </button>
