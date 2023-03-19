@@ -1,6 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react"
 import { FormEvent, Fragment, useEffect, useState } from "react"
 import { VscFilePdf } from "react-icons/vsc"
+import { MdOutlineFormatClear } from "react-icons/md"
 
 const Dashboard = () => {
   // Hook
@@ -8,272 +9,291 @@ const Dashboard = () => {
 
   const [closeAccountingCheck, setCloseAccountingCheck] = useState(false)
 
-  const [assetsItem, setAssetsItem] = useState([
-    {
-      name: "a-credito-verso-soci",
-      label: "A) Credito verso soci",
-      amount: 0,
-    },
-    {
-      name: "b-immobilizzazioni",
-      label: "B) Immobilizzazioni",
-      amount: null,
-    },
-    {
-      name: "b-i-immobilizzazioni-immateriali",
-      label: "B. I) Immobilizzazioni immateriali",
-      amount: 500,
-    },
-    {
-      name: "b-ii-immobilizzazioni-materiali",
-      label: "B. II) Immobilizzazioni materiali",
-      amount: 0,
-    },
-    {
-      name: "b-iii-immobilizzazioni-finanziarie",
-      label: "B. III) Immobilizzazioni finanziarie",
-      amount: 0,
-    },
-    {
-      name: "c-attivo-circolante",
-      label: "C) Attivo circolante",
-      amount: null,
-    },
-    {
-      name: "c-i-rimanenze",
-      label: "C. I) Rimanenze",
-      amount: null,
-    },
-    {
-      name: "c-i-1-materie-prime",
-      label: "C. I. 1) Materie prime",
-      amount: 450000,
-    },
-    {
-      name: "c-i-4-prodotti-finiti",
-      label: "C. I. 4) Prodotti finiti",
-      amount: 0,
-    },
-    {
-      name: "c-ii-crediti",
-      label: "C. II) Crediti",
-      amount: null,
-    },
-    {
-      name: "c-i-1-verso-clienti",
-      label: "C. I. 1) Verso clienti",
-      amount: 0,
-    },
-    {
-      name: "c-ii-2-verso-imprese",
-      label: "C. II. 2) Verso imprese",
-      amount: 0,
-    },
-    {
-      name: "c-iii-attività-finanziarie",
-      label: "C. III) Attività finanziarie",
-      amount: null,
-    },
-    {
-      name: "c-iii-1-partecipazioni-in-imprese-controllate",
-      label: "C. III. 1) Partecipazioni in imprese controllate",
-      amount: 0,
-    },
-    {
-      name: "c-iv-cassa",
-      label: "C. IV) Cassa",
-      amount: 0,
-    },
-    {
-      name: "d-ratei-e-risconti-attivi",
-      label: "D) Ratei e Risconti attivi",
-      amount: 0,
-    },
-  ])
-  const [liabilitiesItem, setLiabilitiesItem] = useState([
-    {
-      name: "a-patrimonio-netto",
-      label: "A) Patrimonio netto",
-      amount: null,
-    },
-    {
-      name: "a-i-capitale-sociale",
-      label: "A. I) Capitale sociale",
-      amount: 0,
-    },
-    {
-      name: "a-ii-riserve",
-      label: "A. II) Riserve",
-      amount: 0,
-    },
-    {
-      name: "a-ix-utili-esercizio",
-      label: "A. IX) Utili dell'esercizio",
-      amount: 0,
-    },
-    {
-      name: "b-fondo-rischi-oneri",
-      label: "B) Fondo Rischi e oneri",
-      amount: null,
-    },
-    {
-      name: "b-ii-imposte",
-      label: "B. II) Imposte",
-      amount: 0,
-    },
-    {
-      name: "c-tfr",
-      label: "C) TFR",
-      amount: 0,
-    },
-    {
-      name: "d-debiti",
-      label: "D) Debiti",
-      amount: null,
-    },
-    {
-      name: "d-3-finanziari",
-      label: "D. 3) Finanziari",
-      amount: null,
-    },
-    {
-      name: "d-3-1-debiti-bp",
-      label: "D. 3. 1) Debiti BP",
-      amount: 0,
-    },
-    {
-      name: "d-3-2-debiti-lp",
-      label: "D. 3. 2) Debiti LP",
-      amount: 0,
-    },
-    {
-      name: "d-6-verso-fornitori",
-      label: "D. 6) Verso fornitori",
-      amount: 0,
-    },
-    {
-      name: "d-13-altri-debiti",
-      label: "D. 13) Altri debiti",
-      amount: 0,
-    },
-    {
-      name: "e-ratei-risconti-passivi",
-      label: "E) Ratei e risconti passivi",
-      amount: 0,
-    },
-  ])
-  const [incomeItems, setIncomeItems] = useState([
-    {
-      name: "a-valore-della-produzione",
-      label: "A) Valore della produzione",
-      amount: null,
-    },
-    {
-      name: "a-1-ricavi-dalle-vendite",
-      label: "A. 1) Ricavi dalle vendite",
-      amount: 0,
-    },
-    {
-      name: "a-2-variazioni-prodotti",
-      label: "A. 2) Variazioni prodotti",
-      amount: 0,
-    },
-    {
-      name: "b-costi-della-produzione",
-      label: "B) Costi della produzione",
-      amount: null,
-    },
-    {
-      name: "b-6-costi-materie-prime",
-      label: "B. 6) Costi materie prime",
-      amount: 0,
-    },
-    {
-      name: "b-7-servizi",
-      label: "B. 7) Servizi",
-      amount: 0,
-    },
-    {
-      name: "b-8-godimento-beni-terzi",
-      label: "B. 8) Godimento beni terzi",
-      amount: 0,
-    },
-    {
-      name: "b-9-costo-personale",
-      label: "B. 9) Costo per il personale",
-      amount: 0,
-    },
-    {
-      name: "b-10-ammortamenti-svalutazioni",
-      label: "B. 10) Ammortamenti e svalutazioni",
-      amount: null,
-    },
-    {
-      name: "b-10-a-immobilizzazioni-immateriali",
-      label: "B. 10. a) Immobilizzazioni immateriali",
-      amount: 0,
-    },
-    {
-      name: "b-10-b-immobilizzazioni-materiali",
-      label: "B. 10. b) Immobilizzazioni materiali",
-      amount: 0,
-    },
-    {
-      name: "b-10-d-svalutazione-crediti",
-      label: "B. 10. d) Svalutazione dei crediti",
-      amount: 0,
-    },
-    {
-      name: "b-11-variazione-rimanenze-mp",
-      label: "B. 11) Variazione rimanenze MP",
-      amount: 0,
-    },
-    {
-      name: "b-12-accantonamento-per-rischi",
-      label: "B. 12) Accantonamento per rischi",
-      amount: 0,
-    },
-    {
-      name: "b-14-oneri-diversi",
-      label: "B. 14) Oneri diversi",
-      amount: 0,
-    },
-    {
-      name: "c-proventi-oneri",
-      label: "C) Proventi e oneri",
-      amount: null,
-    },
-    {
-      name: "c-15-proventi-partecipazioni",
-      label: "C. 15) Proventi da partecipazioni",
-      amount: 0,
-    },
-    {
-      name: "c-17-interessi-altri-oneri",
-      label: "C. 17) Interessi e altri oneri",
-      amount: 0,
-    },
-    {
-      name: "d-rettifiche-di-valore",
-      label: "D) Rettifiche di valore",
-      amount: null,
-    },
-    {
-      name: "d-18-rivalutazioni",
-      label: "D. 18) Rivalutazioni",
-      amount: 0,
-    },
-    {
-      name: "d-19-svalutazioni",
-      label: "D. 19) Svalutazioni",
-      amount: 0,
-    },
-  ])
+  const [assetsItem, setAssetsItem] = useState(
+    JSON.parse(localStorage.getItem("assetsItem")!) ?? [
+      {
+        name: "a-credito-verso-soci",
+        label: "A) Credito verso soci",
+        amount: 40000,
+      },
+      {
+        name: "b-immobilizzazioni",
+        label: "B) Immobilizzazioni",
+        amount: null,
+      },
+      {
+        name: "b-i-immobilizzazioni-immateriali",
+        label: "B. I) Immobilizzazioni immateriali",
+        amount: 750000,
+      },
+      {
+        name: "b-ii-immobilizzazioni-materiali",
+        label: "B. II) Immobilizzazioni materiali",
+        amount: 100000,
+      },
+      {
+        name: "b-iii-immobilizzazioni-finanziarie",
+        label: "B. III) Immobilizzazioni finanziarie",
+        amount: 80000,
+      },
+      {
+        name: "c-attivo-circolante",
+        label: "C) Attivo circolante",
+        amount: null,
+      },
+      {
+        name: "c-i-rimanenze",
+        label: "C. I) Rimanenze",
+        amount: null,
+      },
+      {
+        name: "c-i-1-materie-prime",
+        label: "C. I. 1) Materie prime",
+        amount: 20000,
+      },
+      {
+        name: "c-i-4-prodotti-finiti",
+        label: "C. I. 4) Prodotti finiti",
+        amount: 50000,
+      },
+      {
+        name: "c-ii-crediti",
+        label: "C. II) Crediti",
+        amount: null,
+      },
+      {
+        name: "c-i-1-verso-clienti",
+        label: "C. I. 1) Verso clienti",
+        amount: 0,
+      },
+      {
+        name: "c-ii-2-verso-imprese",
+        label: "C. II. 2) Verso imprese",
+        amount: 55000,
+      },
+      {
+        name: "c-iii-attività-finanziarie",
+        label: "C. III) Attività finanziarie",
+        amount: null,
+      },
+      {
+        name: "c-iii-1-partecipazioni-in-imprese-controllate",
+        label: "C. III. 1) Partecipazioni in imprese controllate",
+        amount: 0,
+      },
+      {
+        name: "c-iv-cassa",
+        label: "C. IV) Cassa",
+        amount: 150000,
+      },
+      {
+        name: "d-ratei-e-risconti-attivi",
+        label: "D) Ratei e Risconti attivi",
+        amount: 5000,
+      },
+    ]
+  )
+  const [liabilitiesItem, setLiabilitiesItem] = useState(
+    JSON.parse(localStorage.getItem("liabilitiesItem")!) ?? [
+      {
+        name: "a-patrimonio-netto",
+        label: "A) Patrimonio netto",
+        amount: null,
+      },
+      {
+        name: "a-i-capitale-sociale",
+        label: "A. I) Capitale sociale",
+        amount: 500000,
+      },
+      {
+        name: "a-ii-riserve",
+        label: "A. II) Riserve",
+        amount: 195000,
+      },
+      {
+        name: "a-ix-utili-esercizio",
+        label: "A. IX) Utili dell'esercizio",
+        amount: 0,
+      },
+      {
+        name: "b-fondo-rischi-oneri",
+        label: "B) Fondo Rischi e oneri",
+        amount: null,
+      },
+      {
+        name: "b-ii-imposte",
+        label: "B. II) Imposte",
+        amount: 0,
+      },
+      {
+        name: "c-tfr",
+        label: "C) TFR",
+        amount: 150000,
+      },
+      {
+        name: "d-debiti",
+        label: "D) Debiti",
+        amount: null,
+      },
+      {
+        name: "d-3-finanziari",
+        label: "D. 3) Finanziari",
+        amount: null,
+      },
+      {
+        name: "d-3-1-debiti-bp",
+        label: "D. 3. 1) Debiti BP",
+        amount: 55000,
+      },
+      {
+        name: "d-3-2-debiti-lp",
+        label: "D. 3. 2) Debiti LP",
+        amount: 350000,
+      },
+      {
+        name: "d-6-verso-fornitori",
+        label: "D. 6) Verso fornitori",
+        amount: 0,
+      },
+      {
+        name: "d-13-altri-debiti",
+        label: "D. 13) Altri debiti",
+        amount: 0,
+      },
+      {
+        name: "e-ratei-risconti-passivi",
+        label: "E) Ratei e risconti passivi",
+        amount: 0,
+      },
+    ]
+  )
+  const [incomeItems, setIncomeItems] = useState(
+    JSON.parse(localStorage.getItem("incomeItems")!) ?? [
+      {
+        name: "a-valore-della-produzione",
+        label: "A) Valore della produzione",
+        amount: null,
+      },
+      {
+        name: "a-1-ricavi-dalle-vendite",
+        label: "A. 1) Ricavi dalle vendite",
+        amount: 0,
+      },
+      {
+        name: "a-2-variazioni-prodotti",
+        label: "A. 2) Variazioni prodotti",
+        amount: 0,
+      },
+      {
+        name: "b-costi-della-produzione",
+        label: "B) Costi della produzione",
+        amount: null,
+      },
+      {
+        name: "b-6-costi-materie-prime",
+        label: "B. 6) Costi materie prime",
+        amount: 0,
+      },
+      {
+        name: "b-7-servizi",
+        label: "B. 7) Servizi",
+        amount: 0,
+      },
+      {
+        name: "b-8-godimento-beni-terzi",
+        label: "B. 8) Godimento beni terzi",
+        amount: 0,
+      },
+      {
+        name: "b-9-costo-personale",
+        label: "B. 9) Costo per il personale",
+        amount: 0,
+      },
+      {
+        name: "b-10-ammortamenti-svalutazioni",
+        label: "B. 10) Ammortamenti e svalutazioni",
+        amount: null,
+      },
+      {
+        name: "b-10-a-immobilizzazioni-immateriali",
+        label: "B. 10. a) Immobilizzazioni immateriali",
+        amount: 0,
+      },
+      {
+        name: "b-10-b-immobilizzazioni-materiali",
+        label: "B. 10. b) Immobilizzazioni materiali",
+        amount: 0,
+      },
+      {
+        name: "b-10-d-svalutazione-crediti",
+        label: "B. 10. d) Svalutazione dei crediti",
+        amount: 0,
+      },
+      {
+        name: "b-11-variazione-rimanenze-mp",
+        label: "B. 11) Variazione rimanenze MP",
+        amount: 0,
+      },
+      {
+        name: "b-12-accantonamento-per-rischi",
+        label: "B. 12) Accantonamento per rischi",
+        amount: 0,
+      },
+      {
+        name: "b-14-oneri-diversi",
+        label: "B. 14) Oneri diversi",
+        amount: 0,
+      },
+      {
+        name: "c-proventi-oneri",
+        label: "C) Proventi e oneri",
+        amount: null,
+      },
+      {
+        name: "c-15-proventi-partecipazioni",
+        label: "C. 15) Proventi da partecipazioni",
+        amount: 0,
+      },
+      {
+        name: "c-17-interessi-altri-oneri",
+        label: "C. 17) Interessi e altri oneri",
+        amount: 0,
+      },
+      {
+        name: "d-rettifiche-di-valore",
+        label: "D) Rettifiche di valore",
+        amount: null,
+      },
+      {
+        name: "d-18-rivalutazioni",
+        label: "D. 18) Rivalutazioni",
+        amount: 0,
+      },
+      {
+        name: "d-19-svalutazioni",
+        label: "D. 19) Svalutazioni",
+        amount: 0,
+      },
+    ]
+  )
 
   const [type1, setCustomType1] = useState("")
   const [type2, setCustomType2] = useState("")
   const [type3, setCustomType3] = useState("")
   const [type4, setCustomType4] = useState("")
+
+  // save new data on localstorage
+  useEffect(() => {
+    localStorage.setItem("assetsItem", JSON.stringify(assetsItem))
+  }, [assetsItem])
+
+  useEffect(() => {
+    localStorage.setItem("liabilitiesItem", JSON.stringify(liabilitiesItem))
+  }, [liabilitiesItem])
+
+  useEffect(() => {
+    localStorage.setItem("incomeItems", JSON.stringify(incomeItems))
+  }, [incomeItems])
 
   // Data
   const customData1 = [
@@ -346,7 +366,7 @@ const Dashboard = () => {
 
     // soldi che ho in cassa
     const cassaAmount = assetsItem.find(
-      (item) => item.name === "c-iv-cassa"
+      (item: { name: string }) => item.name === "c-iv-cassa"
     )?.amount
 
     if (
@@ -653,7 +673,7 @@ const Dashboard = () => {
           setIncomeItems(newCEvarMP)
           setAssetsItem(newSPAscorteMP)
           break
-        
+
         case "variazionePF":
           // aumento la variazione di prodotti finiti nel conto economico (ricavo)
           let newCEvarPF = incomeItems.map((item) =>
@@ -707,6 +727,69 @@ const Dashboard = () => {
   // Checkbox to set if the accounting is close (and calculate taxes)
   const closeAccounting = () => {
     setCloseAccountingCheck(!closeAccountingCheck)
+
+    // calculate taxes
+    const ricaviAmount = incomeItems
+      .filter((item) => item.name[0] === "a")
+      .reduce((acc, item) => acc + (item.amount != null ? item.amount : 0), 0)
+
+    const costiAmount = incomeItems
+      .filter((item) => item.name[0] === "b")
+      .reduce((acc, item) => acc + (item.amount != null ? item.amount : 0), 0)
+
+    const costoPersonale = incomeItems
+      .filter((item) => item.name[0] === "b-9")
+      .reduce((acc, item) => acc + (item.amount != null ? item.amount : 0), 0)
+
+    const proventiAmount = incomeItems
+      .filter((item) => item.name[0] === "c")
+      .reduce((acc, item) => acc + (item.amount != null ? item.amount : 0), 0)
+
+    const rettificheAmount = incomeItems
+      .filter((item) => item.name[0] === "d")
+      .reduce((acc, item) => acc + (item.amount != null ? item.amount : 0), 0)
+
+    const MON = ricaviAmount - costiAmount
+
+    const VAN = MON + costoPersonale
+    const VAI = MON - proventiAmount + rettificheAmount
+
+    const IRAP = (3.9 * VAN) / 100
+    const IRES = (24 * VAI) / 100
+
+    const utileNetto = VAI - IRAP - IRES
+
+    // aggiungo le imposte nuove
+    let newCEtax = liabilitiesItem.map((item) =>
+      item.name === "b-ii-imposte"
+        ? {
+            ...item,
+            amount: IRAP + IRES,
+          }
+        : item
+    )
+
+    // aggiorno l'utile di esercizio
+    newCEtax = newCEtax.map((item) =>
+      item.name === "a-ix-utili-esercizio"
+        ? {
+            ...item,
+            amount: utileNetto,
+          }
+        : item
+    )
+
+    setLiabilitiesItem(newCEtax)
+  }
+
+  // remove saved items from localstorage
+  const clearData = () => {
+    localStorage.removeItem("assetsItem")
+    localStorage.removeItem("liabilitiesItem")
+    localStorage.removeItem("incomeItems")
+
+    // ricarico la pagina per applicare le modifiche
+    location.reload()
   }
 
   return (
@@ -714,19 +797,34 @@ const Dashboard = () => {
       {/* Pulsanti */}
       <div className='flex flex-col justify-center items-center'>
         <div className='flex flex-col md:flex-row gap-x-5 my-5 items-center'>
-          {/* Add Item */}
-          <button
-            type='button'
-            onClick={openModal}
-            className='font-bold uppercase mt-5 rounded-lg bg-teal-600 p-3 hover:bg-teal-700 transition-colors text-white shadow-md'
-          >
-            new transaction
-          </button>
+          <div className='flex justify-center gap-2'>
+            {/* Add Item */}
+            <button
+              type='button'
+              onClick={openModal}
+              className='font-bold uppercase mt-5 rounded-lg bg-teal-600 p-3 hover:bg-teal-700 disabled:bg-gray-300 transition-colors text-white shadow-md'
+              disabled={closeAccountingCheck ? true : false}
+            >
+              new transaction
+            </button>
+
+            {/* Clear */}
+            <button
+              disabled={closeAccountingCheck ? true : false}
+              type='button'
+              onClick={clearData}
+              className='transition-colors font-bold uppercase mt-5 rounded-lg bg-red-400 p-3 hover:bg-red-500 disabled:bg-gray-300 text-white shadow-md flex justify-center'
+            >
+              <MdOutlineFormatClear className='w-6 h-6 ' />
+              
+            </button>
+          </div>
 
           {/* Download PDF */}
           <button
             type='button'
-            className='font-bold mt-5 flex gap-x-3 rounded-lg bg-red-400 p-3 hover:bg-red-500 transition-colors text-white shadow-md'
+            className='font-bold mt-5 flex gap-x-3 rounded-lg bg-red-400 p-3 hover:bg-red-500 disabled:bg-gray-300 transition-colors text-white shadow-md'
+            disabled={!closeAccountingCheck ? true : false}
           >
             DOWNLOAD PDF
             <VscFilePdf className='text-white h-6 w-6' />
@@ -739,9 +837,11 @@ const Dashboard = () => {
             name='closeBalance'
             id='close-balance'
             className='mr-2'
-            onChange={() => closeAccounting()}
+            onChange={closeAccounting}
           />
-          <label htmlFor='close-balance'>Close accounting</label>
+          <label htmlFor='close-balance'>
+            Close accounting (and calculate current taxes)
+          </label>
         </div>
       </div>
 
@@ -756,10 +856,12 @@ const Dashboard = () => {
               <p className='font-bold text-base'>
                 Total:{" "}
                 <span className='text-teal-600'>
-                  {assetsItem.reduce(
-                    (acc, item) =>
-                      acc + (item.amount != null ? item.amount : 0),
-                    0
+                  {new Intl.NumberFormat("it-IT").format(
+                    assetsItem.reduce(
+                      (acc, item) =>
+                        acc + (item.amount != null ? item.amount : 0),
+                      0
+                    )
                   )}
                 </span>
               </p>
@@ -783,7 +885,9 @@ const Dashboard = () => {
                     </td>
                     <td className='whitespace-nowrap px-4 py-2'>
                       <p className='text-center'>
-                        {asset.amount != null ? asset.amount : ""}
+                        {asset.amount != null
+                          ? new Intl.NumberFormat("it-IT").format(asset.amount)
+                          : ""}
                       </p>
                     </td>
                   </tr>
@@ -799,10 +903,12 @@ const Dashboard = () => {
               <p className='font-bold text-base'>
                 Total:{" "}
                 <span className='text-teal-600'>
-                  {liabilitiesItem.reduce(
-                    (acc, item) =>
-                      acc + (item.amount != null ? item.amount : 0),
-                    0
+                  {new Intl.NumberFormat("it-IT").format(
+                    liabilitiesItem.reduce(
+                      (acc, item) =>
+                        acc + (item.amount != null ? item.amount : 0),
+                      0
+                    )
                   )}
                 </span>
               </p>
@@ -828,7 +934,11 @@ const Dashboard = () => {
                     </td>
                     <td className='whitespace-nowrap px-4 py-2'>
                       <p className='text-center'>
-                        {liabilities.amount != null ? liabilities.amount : ""}
+                        {liabilities.amount != null
+                          ? new Intl.NumberFormat("it-IT").format(
+                              liabilities.amount
+                            )
+                          : ""}
                       </p>
                     </td>
                   </tr>
@@ -863,7 +973,9 @@ const Dashboard = () => {
                   </td>
                   <td className='whitespace-nowrap px-4 py-2'>
                     <p className='text-center'>
-                      {income.amount != null ? income.amount : ""}
+                      {income.amount != null
+                        ? new Intl.NumberFormat("it-IT").format(income.amount)
+                        : ""}
                     </p>
                   </td>
                 </tr>
