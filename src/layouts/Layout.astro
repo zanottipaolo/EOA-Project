@@ -31,9 +31,27 @@ const { title } = Astro.props
   <head>
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width' />
-    <link rel='icon' type='image/svg+xml' href='/favicon.ico' />
     <meta name='generator' content={Astro.generator} />
+    <meta name='author' content='Paolo Zanotti' />
+    <meta
+      name='keywords'
+      content='Financial report, Financial, Report, Balance sheet, Assets, Liabilities, Income'
+    />
+    <meta
+      name='description'
+      content='An open source project to create your own company financial report by entering all the necessary items. You can also save it as a PDF document.'
+    />
+
+    <meta name='image' property='og:image' content='/financial-og.jpg' />
+    <meta property='og:type' name='type' content='website' />
+    <meta name='title' property='og:title' content='Financial Report Online' />
+    <meta
+      name='description'
+      property='og:description'
+      content='An open source project to create your own company financial report by entering all the necessary items. You can also save it as a PDF document.'
+    />
     <title>{title}</title>
+    <link rel='icon' type='image/svg+xml' href='/favicon.ico' />
   </head>
   <body class='flex flex-col h-screen bg-gray-100 dark:bg-gray-600'>
     <Header />
