@@ -1,55 +1,40 @@
-# Astro Starter Kit: Basics
+# Financial Report Online ⚖️
 
-```
-npm create astro@latest -- --template basics
-```
+[![Built with AstroJS](https://astro.badg.es/v1/built-with-astro.svg)](https://astro.build)
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/f151084b-c508-476d-b4fe-65bc4049069e/deploy-status)](https://app.netlify.com/sites/financialreport/deploys)
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+An open source project to create your own company financial report by entering all the necessary items. You can also save it as a PDF document. 
 
-![basics](https://user-images.githubusercontent.com/4677417/186188965-73453154-fdec-4d6b-9c34-cb35c248ae5b.png)
+&#8594; Dark mode and white mode supported! 🌚
 
+Developed for Economics and Business Organization exam @ UniBg - Computer Engineering.
 
-## 🚀 Project Structure
+## Balance sheet
 
-Inside of your Astro project, you'll see the following folders and files:
+![Balance sheet screenshot](assets/balance-sheet.png)
 
-```
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+_All items of the balance sheet with the total amount._
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Income statement
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+![Income statement screenshot](assets/income.png)
 
-Any static assets, like images, can be placed in the `public/` directory.
+_All items of the income statement with the total amount._
 
-## 🧞 Commands
+## Actions available
 
-All commands are run from the root of the project, from a terminal:
+![Actions available screenshot](assets/actions.png)
+<em>
+You can:
 
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `npm install`          | Installs dependencies                            |
-| `npm run dev`          | Starts local dev server at `localhost:3000`      |
-| `npm run build`        | Build your production site to `./dist/`          |
-| `npm run preview`      | Preview your build locally, before deploying     |
-| `npm run astro ...`    | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro --help` | Get help using the Astro CLI                     |
+- Create a new transaction (insert new data)
+- Clear your new data (saved on localStorage)
+- Download PDF of the financial report once the accounting year has been closed
+- Close the accounting year (and calculate current taxes)
+  </em>
 
-## 👀 Want to learn more?
+## Insert operation function
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+![Insert operation function screenshot](assets/insert.png)
+*You can use pre-built operations (pay salaries, buy materials, selling products, ...) with their value or create your custom operations by specifying the individual categories to move (knowledge of double-entry bookkeeping is required for this).*
