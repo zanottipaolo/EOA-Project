@@ -6,7 +6,10 @@ const currentYear = new Date().getFullYear()
 
 <footer aria-label='Site Footer' class='bg-gray-100 dark:bg-gray-600 mt-auto'>
   <div class='mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8'>
-    <a href='/' class='flex flex-col items-center justify-center text-teal-600 dark:text-teal-400'>
+    <a
+      href='/'
+      class='flex flex-col items-center justify-center text-teal-600 dark:text-teal-400'
+    >
       <img src='/favicon.ico' alt='Logo EOA project' class='h-12' />
       <p class='font-bold text-3xl italic mt-5 text-center'>
         Balance Sheet Online
@@ -14,7 +17,10 @@ const currentYear = new Date().getFullYear()
       <p class='text-sm'>{currentYear}</p>
     </a>
 
-    <p class='mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500 dark:text-white''>
+    <p
+      class='mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500 dark:text-white'
+      '
+    >
       An open source project to create your own company balance sheet by
       entering all the necessary items. You can also save it as a PDF document.
     </p>
@@ -63,7 +69,7 @@ const currentYear = new Date().getFullYear()
           class='text-gray-700 transition hover:text-gray-700/75 dark:text-black dark:hover:text-gray-700'
         >
           <span class='sr-only'>GitHub</span>
-          <AiOutlineGithub className='h-8 w-8' />
+          <AiOutlineGithub className='h-8 w-8' client:only='react' />
         </a>
       </li>
     </ul>
