@@ -1,5 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react"
 import { FormEvent, Fragment, useEffect, useState } from "react"
+import jsPDF from "jspdf"
 import { VscFilePdf } from "react-icons/vsc"
 import { MdOutlineFormatClear } from "react-icons/md"
 
@@ -657,7 +658,10 @@ const Dashboard = () => {
               ? {
                   ...item,
                   amount:
-                    item.amount! + Number(event.target.preBuiltOpValue.value),
+                    item.amount! + Number(event.target.preBuiltOpValue.value) >
+                    0
+                      ? -Number(event.target.preBuiltOpValue.value)
+                      : Number(event.target.preBuiltOpValue.value),
                 }
               : item
           )
@@ -706,88 +710,18 @@ const Dashboard = () => {
       }
       closeModal()
     } else if (event.target.opRadio[1].checked) {
-      let assetsAmount = 0
-      let liabilitiesAmount = 0
-      let incomeAmount = 0
-
-      switch (event.target.type1[0].value) {
-        case "assets":
-          assetsAmount +=
-            Number(event.target.type1[2].value) -
-            Number(event.target.type1[3].value)
-          break
-        case "liabilities":
-          liabilitiesAmount +=
-            Number(event.target.type1[2].value) -
-            Number(event.target.type1[3].value)
-          break
-        case "income":
-          incomeAmount +=
-            Number(event.target.type1[2].value) -
-            Number(event.target.type1[3].value)
-          break
-      }
-
-      switch (event.target.type2[0].value) {
-        case "assets":
-          assetsAmount +=
-            Number(event.target.type2[2].value) -
-            Number(event.target.type2[3].value)
-          break
-        case "liabilities":
-          liabilitiesAmount +=
-            Number(event.target.type2[2].value) -
-            Number(event.target.type2[3].value)
-          break
-        case "income":
-          incomeAmount +=
-            Number(event.target.type2[2].value) -
-            Number(event.target.type2[3].value)
-          break
-      }
-
-      switch (event.target.type3[0].value) {
-        case "assets":
-          assetsAmount +=
-            Number(event.target.type3[2].value) -
-            Number(event.target.type3[3].value)
-          break
-        case "liabilities":
-          liabilitiesAmount +=
-            Number(event.target.type3[2].value) -
-            Number(event.target.type3[3].value)
-          break
-        case "income":
-          incomeAmount +=
-            Number(event.target.type3[2].value) -
-            Number(event.target.type3[3].value)
-          break
-      }
-
-      switch (event.target.type4[0].value) {
-        case "assets":
-          assetsAmount +=
-            Number(event.target.type4[2].value) -
-            Number(event.target.type4[3].value)
-          break
-        case "liabilities":
-          liabilitiesAmount +=
-            Number(event.target.type4[2].value) -
-            Number(event.target.type4[3].value)
-          break
-        case "income":
-          incomeAmount +=
-            Number(event.target.type4[2].value) -
-            Number(event.target.type4[3].value)
-          break
-      }
-
       // se c'è pareggio allora aggiorno i dati
       // = le categorie che modifico devono avere lo stesso importo
       if (
-        (assetsAmount === liabilitiesAmount * -1 && assetsAmount != 0) ||
-        (liabilitiesAmount === incomeAmount * -1 && liabilitiesAmount != 0) ||
-        (incomeAmount === assetsAmount * -1 && incomeAmount != 0)
+        Number(event.target.type1[2].value) -
+          Number(event.target.type1[3].value) +
+          (Number(event.target.type2[2].value) -
+            Number(event.target.type2[3].value)) +
+          (Number(event.target.type3[2].value) -
+            Number(event.target.type3[3].value)) +
+          (Number(event.target.type4[2].value) -
+            Number(event.target.type4[3].value)) ===
+        0
       ) {
         let newAssestsCustom = assetsItem
         let newLiabilitiesCustom = liabilitiesItem
@@ -827,8 +761,10 @@ const Dashboard = () => {
                     ...item,
                     amount:
                       item.amount! +
-                      Math.abs((Number(event.target.type1[2].value) -
-                        Number(event.target.type1[3].value))),
+                      Math.abs(
+                        Number(event.target.type1[2].value) -
+                          Number(event.target.type1[3].value)
+                      ),
                   }
                 : item
             )
@@ -1017,8 +953,9 @@ const Dashboard = () => {
     const VAN = MON + costoPersonale
     const VAI = MON - proventiAmount + rettificheAmount
 
-    const IRAP = (3.9 * VAN) / 100
-    const IRES = (24 * VAI) / 100
+    // se il VAI è negativo non colacolo le imposte
+    const IRAP = VAI > 0 ? (3.9 * VAN) / 100 : 0
+    const IRES = VAI > 0 ? (24 * VAI) / 100 : 0
 
     const utileNetto = VAI - IRAP - IRES
 
@@ -1055,6 +992,21 @@ const Dashboard = () => {
     location.reload()
   }
 
+  const createPDF = () => {
+    const doc = new jsPDF({
+      format: "a1",
+      unit: "pt",
+      orientation: "p",
+      compress: true
+    })
+
+    doc.html(document.getElementById("balance")!, {
+      async callback(doc) {
+        await doc.save("balance-sheet")
+      },
+    })
+  }
+
   return (
     <div className='flex flex-col items-center justify-center py-5'>
       {/* Pulsanti */}
@@ -1076,7 +1028,7 @@ const Dashboard = () => {
               disabled={closeAccountingCheck ? true : false}
               type='button'
               onClick={clearData}
-              className='transition-colors flex items-center font-bold uppercase mt-5 rounded-lg bg-red-400 p-3 hover:bg-red-500 disabled:bg-gray-300 text-white shadow-md flex justify-center'
+              className='transition-colors items-center font-bold uppercase mt-5 rounded-lg bg-red-400 p-3 hover:bg-red-500 disabled:bg-gray-300 text-white shadow-md flex justify-center'
             >
               <MdOutlineFormatClear className='w-6 h-6 ' />
             </button>
@@ -1085,6 +1037,7 @@ const Dashboard = () => {
           {/* Download PDF */}
           <button
             type='button'
+            onClick={createPDF}
             className='font-bold mt-5 flex gap-x-3 rounded-lg bg-red-400 p-3 hover:bg-red-500 disabled:bg-gray-300 transition-colors text-white shadow-md'
             disabled={!closeAccountingCheck ? true : false}
           >
@@ -1107,74 +1060,124 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Stato patrimoniale */}
-      <div className='mt-16 w-full px-4 md:px-16'>
-        <h2 className='font-bold text-2xl'>Balance sheet</h2>
-        <div className='flex flex-col md:flex-row gap-y-10 md:justify-around'>
-          {/* Attivo */}
-          <div className='overflow-x-auto md:p-12 w-full'>
-            <div className='flex flex-col sm:flex-row sm:items-center justify-between mb-5'>
-              <h3 className='font-bold text-xl'>Assets</h3>
-              <p className='font-bold text-base'>
-                Total:{" "}
-                <span className='text-teal-600'>
-                  {new Intl.NumberFormat("it-IT").format(
-                    assetsItem.reduce(
-                      (acc, item) =>
-                        acc + (item.amount != null ? item.amount : 0),
-                      0
-                    )
-                  )}
-                </span>
-              </p>
+      {/* Tables */}
+      <div
+        id='balance'
+        className='w-full flex flex-col justify-center items-center'
+      >
+        {/* Stato patrimoniale */}
+        <div className='mt-16 w-full px-4 md:px-16'>
+          <h2 className='font-bold text-2xl'>Balance sheet</h2>
+          <div className='flex flex-col md:flex-row gap-y-10 md:justify-around'>
+            {/* Attivo */}
+            <div className='overflow-x-auto md:p-12 w-full'>
+              <div className='flex flex-col sm:flex-row sm:items-center justify-between mb-5'>
+                <h3 className='font-bold text-xl'>Assets</h3>
+                <p className='font-bold text-base'>
+                  Total:{" "}
+                  <span className='text-teal-600'>
+                    {new Intl.NumberFormat("it-IT").format(
+                      assetsItem.reduce(
+                        (acc, item) =>
+                          acc + (item.amount != null ? item.amount : 0),
+                        0
+                      )
+                    )}
+                  </span>
+                </p>
+              </div>
+              <table
+                className={`min-w-full divide-y-2 divide-gray-200 text-sm ${
+                  closeAccountingCheck
+                    ? "text-gray-400"
+                    : "text-gray-700 dark:text-gray-200"
+                }`}
+              >
+                <tbody className='divide-y divide-gray-200'>
+                  {assetsItem.map((asset) => (
+                    <tr key={asset.name}>
+                      <td className='whitespace-nowrap px-4 py-2 font-medium'>
+                        <p
+                          className={`${
+                            asset.amount != null ? "" : "font-bold"
+                          }`}
+                        >
+                          {asset.label}
+                        </p>
+                      </td>
+                      <td className='whitespace-nowrap px-4 py-2'>
+                        <p className='text-center'>
+                          {asset.amount != null
+                            ? new Intl.NumberFormat("it-IT").format(
+                                asset.amount
+                              )
+                            : ""}
+                        </p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <table
-              className={`min-w-full divide-y-2 divide-gray-200 text-sm ${
-                closeAccountingCheck
-                  ? "text-gray-400"
-                  : "text-gray-700 dark:text-gray-200"
-              }`}
-            >
-              <tbody className='divide-y divide-gray-200'>
-                {assetsItem.map((asset) => (
-                  <tr key={asset.name}>
-                    <td className='whitespace-nowrap px-4 py-2 font-medium'>
-                      <p
-                        className={`${asset.amount != null ? "" : "font-bold"}`}
-                      >
-                        {asset.label}
-                      </p>
-                    </td>
-                    <td className='whitespace-nowrap px-4 py-2'>
-                      <p className='text-center'>
-                        {asset.amount != null
-                          ? new Intl.NumberFormat("it-IT").format(asset.amount)
-                          : ""}
-                      </p>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
 
-          {/* Passivo */}
-          <div className='overflow-x-auto md:p-12 w-full'>
-            <div className='flex flex-col sm:flex-row sm:items-center justify-between mb-5'>
-              <h3 className='font-bold text-xl'>Liabilities</h3>
-              <p className='font-bold text-base'>
-                Total:{" "}
-                <span className='text-teal-600'>
-                  {new Intl.NumberFormat("it-IT").format(
-                    liabilitiesItem.reduce(
-                      (acc, item) =>
-                        acc + (item.amount != null ? item.amount : 0),
-                      0
-                    )
-                  )}
-                </span>
-              </p>
+            {/* Passivo */}
+            <div className='overflow-x-auto md:p-12 w-full'>
+              <div className='flex flex-col sm:flex-row sm:items-center justify-between mb-5'>
+                <h3 className='font-bold text-xl'>Liabilities</h3>
+                <p className='font-bold text-base'>
+                  Total:{" "}
+                  <span className='text-teal-600'>
+                    {new Intl.NumberFormat("it-IT").format(
+                      liabilitiesItem.reduce(
+                        (acc, item) =>
+                          acc + (item.amount != null ? item.amount : 0),
+                        0
+                      )
+                    )}
+                  </span>
+                </p>
+              </div>
+              <table
+                className={`min-w-full divide-y-2 divide-gray-200 text-sm ${
+                  closeAccountingCheck
+                    ? "text-gray-400"
+                    : "text-gray-700 dark:text-gray-200"
+                }`}
+              >
+                <tbody className='divide-y divide-gray-200'>
+                  {liabilitiesItem.map((liabilities) => (
+                    <tr key={liabilities.name}>
+                      <td className='whitespace-nowrap px-4 py-2 font-medium'>
+                        <p
+                          className={`${
+                            liabilities.amount != null ? "" : "font-bold"
+                          }`}
+                        >
+                          {liabilities.label}
+                        </p>
+                      </td>
+                      <td className='whitespace-nowrap px-4 py-2'>
+                        <p className='text-center'>
+                          {liabilities.amount != null
+                            ? new Intl.NumberFormat("it-IT").format(
+                                liabilities.amount
+                              )
+                            : ""}
+                        </p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
+          </div>
+        </div>
+
+        {/* Conto economico */}
+        <div className='mt-10 w-full px-4 md:px-16'>
+          <h2 className='font-bold text-2xl'>Income statement</h2>
+
+          <div className='overflow-x-auto md:p-12 w-full md:w-1/2 md:m-auto'>
             <table
               className={`min-w-full divide-y-2 divide-gray-200 text-sm ${
                 closeAccountingCheck
@@ -1183,23 +1186,21 @@ const Dashboard = () => {
               }`}
             >
               <tbody className='divide-y divide-gray-200'>
-                {liabilitiesItem.map((liabilities) => (
-                  <tr key={liabilities.name}>
+                {incomeItems.map((income) => (
+                  <tr key={income.name}>
                     <td className='whitespace-nowrap px-4 py-2 font-medium'>
                       <p
                         className={`${
-                          liabilities.amount != null ? "" : "font-bold"
+                          income.amount != null ? "" : "font-bold"
                         }`}
                       >
-                        {liabilities.label}
+                        {income.label}
                       </p>
                     </td>
                     <td className='whitespace-nowrap px-4 py-2'>
                       <p className='text-center'>
-                        {liabilities.amount != null
-                          ? new Intl.NumberFormat("it-IT").format(
-                              liabilities.amount
-                            )
+                        {income.amount != null
+                          ? new Intl.NumberFormat("it-IT").format(income.amount)
                           : ""}
                       </p>
                     </td>
@@ -1208,42 +1209,6 @@ const Dashboard = () => {
               </tbody>
             </table>
           </div>
-        </div>
-      </div>
-
-      {/* Conto economico */}
-      <div className='mt-10 w-full px-4 md:px-16'>
-        <h2 className='font-bold text-2xl'>Income statement</h2>
-
-        <div className='overflow-x-auto md:p-12 w-full md:w-1/2 md:m-auto'>
-          <table
-            className={`min-w-full divide-y-2 divide-gray-200 text-sm ${
-              closeAccountingCheck
-                ? "text-gray-400"
-                : "text-gray-700 dark:text-gray-200"
-            }`}
-          >
-            <tbody className='divide-y divide-gray-200'>
-              {incomeItems.map((income) => (
-                <tr key={income.name}>
-                  <td className='whitespace-nowrap px-4 py-2 font-medium'>
-                    <p
-                      className={`${income.amount != null ? "" : "font-bold"}`}
-                    >
-                      {income.label}
-                    </p>
-                  </td>
-                  <td className='whitespace-nowrap px-4 py-2'>
-                    <p className='text-center'>
-                      {income.amount != null
-                        ? new Intl.NumberFormat("it-IT").format(income.amount)
-                        : ""}
-                    </p>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
 
