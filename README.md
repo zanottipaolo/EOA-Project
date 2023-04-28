@@ -6,7 +6,7 @@
 
 An open source project to create your own company financial report by entering all the necessary items. You can also save it as a PDF document. 
 
-&#8594; Dark mode and white mode supported! 🌚
+&#8594; Dark mode and light mode supported! 🌚
 
 Developed for Economics and Business Organization exam @ UniBg - Computer Engineering.
 
